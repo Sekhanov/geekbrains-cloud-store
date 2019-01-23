@@ -1,4 +1,4 @@
-package ru.skhanov.mycloudstoreclient;
+package ru.skhanov.mycloudstoreclient.fxcontrollers;
 
 import java.io.IOException;
 import java.net.URL;
@@ -14,6 +14,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import ru.skhanov.mycloudstoreclient.Network;
 import ru.skhanov.mycloudstorecommon.AbstractMessage;
 import ru.skhanov.mycloudstorecommon.FileMessage;
 import ru.skhanov.mycloudstorecommon.FileRequest;
