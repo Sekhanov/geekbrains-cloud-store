@@ -10,7 +10,8 @@ public class MainClient extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
 //        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/main.fxml"));
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/signUp.fxml"));
+//        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/signUp.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/storagePanel.fxml"));
         Parent root = fxmlLoader.load();
         primaryStage.setTitle("Box Client");
         Scene scene = new Scene(root);
