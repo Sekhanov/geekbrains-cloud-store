@@ -9,16 +9,16 @@ import ru.skhanov.mycloudstorecommon.AbstractMessage;
 
 public class Network {
     private static Socket socket;
-    private static ObjectEncoderOutputStream out;
-    private static ObjectDecoderInputStream in;
+    private static ObjectEncoderOutputStream objectEncoderOutputStream;
+    private static ObjectDecoderInputStream objectDecoderInputStream;
 
     private static final int MAX_OBJ_SIZE = 100 * 1024 * 1024;
 
     public static void start() {
         try {
             socket = new Socket("localhost", 8189);
-            out = new ObjectEncoderOutputStream(socket.getOutputStream());
-            in = new ObjectDecoderInputStream(socket.getInputStream(), MAX_OBJ_SIZE);
+            objectEncoderOutputStream = new ObjectEncoderOutputStream(socket.getOutputStream());
+            objectDecoderInputStream = new ObjectDecoderInputStream(socket.getInputStream(), MAX_OBJ_SIZE);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -26,12 +26,12 @@ public class Network {
 
     public static void stop() {
         try {
-            out.close();
+            objectEncoderOutputStream.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
         try {
-            in.close();
+            objectDecoderInputStream.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -44,7 +44,7 @@ public class Network {
 
     public static boolean sendMsg(AbstractMessage msg) {
         try {
-            out.writeObject(msg);
+            objectEncoderOutputStream.writeObject(msg);
             return true;
         } catch (IOException e) {
             e.printStackTrace();
@@ -53,8 +53,8 @@ public class Network {
     }
 
     public static AbstractMessage readObject() throws ClassNotFoundException, IOException {
-        Object obj = in.readObject();
-        return (AbstractMessage) obj;
+        Object object = objectDecoderInputStream.readObject();
+        return (AbstractMessage) object;
     }
 }
 

@@ -49,7 +49,7 @@ xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.skhanov.mycloudstoreclient
 		</HBox>
 		<HBox prefHeight="707.0" prefWidth="1024.0">
 			<children>
-				<TableView prefHeight="707.0" prefWidth="500.0">
+				<TableView prefHeight="707.0" prefWidth="500.0" fx:id="localFileStorageTableView">
 					<columns>
 						<TableColumn prefWidth="282.0" text="name" />
 						<TableColumn minWidth="0.0" prefWidth="95.0" text="size" />

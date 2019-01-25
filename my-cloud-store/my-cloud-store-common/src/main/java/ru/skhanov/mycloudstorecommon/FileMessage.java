@@ -4,8 +4,11 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-public class FileMessage extends AbstractMessage {
-    private String filename;
+public class FileMessage extends AbstractMessage {	
+ 
+	private static final long serialVersionUID = -3810868633835335417L;
+	
+	private String filename;
     private byte[] data;
 
     public String getFilename() {
