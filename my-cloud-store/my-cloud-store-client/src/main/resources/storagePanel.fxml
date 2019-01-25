@@ -49,21 +49,21 @@ xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.skhanov.mycloudstoreclient
 		</HBox>
 		<HBox prefHeight="707.0" prefWidth="1024.0">
 			<children>
-				<TableView prefHeight="707.0" prefWidth="500.0" fx:id="localFileStorageTableView">
+				<TableView prefHeight="707.0" prefWidth="500.0" fx:id="localTable">
 					<columns>
-						<TableColumn prefWidth="282.0" text="name" />
-						<TableColumn minWidth="0.0" prefWidth="95.0" text="size" />
-						<TableColumn minWidth="0.0" prefWidth="122.0" text="date" />
+						<TableColumn prefWidth="282.0" text="Name" fx:id="localNameColumn"/>
+						<TableColumn minWidth="0.0" prefWidth="95.0" text="Size" fx:id="localSizeColumn"/>
+						<TableColumn minWidth="0.0" prefWidth="122.0" text="Date" fx:id="localDateColumn"/>
 					</columns>
                <HBox.margin>
                   <Insets left="10.0" />
                </HBox.margin>
 				</TableView>
-				<TableView prefHeight="707.0" prefWidth="500">
+				<TableView prefHeight="707.0" prefWidth="500" fx:id="cloudTable">
 					<columns>
-						<TableColumn prefWidth="282.0" text="name" />
-						<TableColumn minWidth="0.0" prefWidth="85.0" text="size" />
-						<TableColumn minWidth="0.0" prefWidth="132.0" text="date" />
+						<TableColumn prefWidth="282.0" text="name" fx:id="cloudNameColumn"/>
+						<TableColumn minWidth="0.0" prefWidth="85.0" text="size" fx:id="cloudSizeColumn"/>
+						<TableColumn minWidth="0.0" prefWidth="132.0" text="date" fx:id="cloudDateColumn"/>
 					</columns>
 					<HBox.margin>
 						<Insets left="14.0" right="10.0" />

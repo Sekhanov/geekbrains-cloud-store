@@ -7,71 +7,57 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import ru.skhanov.mycloudstorecommon.FileParameters;
 
-public class StoragePanelFxController implements Initializable {
+public class StoragePanelFxController implements Initializable {		
+	
 
 	@FXML
-	TableView<FileParameters> localFileStorageTableView;
+	private TableView<FileParameters> localTable;
+	
+	@FXML
+	private TableColumn<FileParameters, String> localNameColumn;
+	
+	@FXML
+	private TableColumn<FileParameters, Integer> localSizeColumn;	
+	
+	@FXML 
+	private TableColumn<FileParameters, String> localDateColumn;
+	
+	@FXML 
+	private TableView<FileParameters> cloudTable;
+	
+	@FXML
+	private TableColumn<FileParameters, String> cloudNameColumn;
+	
+	@FXML
+	private TableColumn<FileParameters, Integer> cloudSizeColumn;	
+	
+	@FXML 
+	private TableColumn<FileParameters, String> cloudDateColumn;
+	
 
+	
 	@Override
-	public void initialize(URL location, ResourceBundle resources) {
-		ObservableList<FileParameters> fileParametersList = FXCollections.observableArrayList();
-		fileParametersList.addAll(new FileParameters("Name1", 1, "20 nov"), new FileParameters("name2", 2, "30 oct"));
-		localFileStorageTableView.setItems(fileParametersList);
+	public void initialize(URL location, ResourceBundle resources) {		
+		initialazeTable(localTable, localNameColumn, localSizeColumn, localDateColumn);
+		initialazeTable(cloudTable, cloudNameColumn, cloudSizeColumn, cloudDateColumn);
+		
 	}
 
-//	@Override
-//	public void initialize(URL location, ResourceBundle resources) {
-//        Network.start();
-//        Thread t = new Thread(() -> {
-//            try {
-//                while (true) {
-//                    AbstractMessage am = Network.readObject();
-//                    if (am instanceof FileMessage) {
-//                        FileMessage fm = (FileMessage) am;
-//                        Files.write(Paths.get("client_storage/" + fm.getFilename()), fm.getData(), StandardOpenOption.CREATE);
-//                        refreshLocalFilesList();
-//                    }
-//                }
-//            } catch (ClassNotFoundException | IOException e) {
-//                e.printStackTrace();
-//            } finally {
-//                Network.stop();
-//            }
-//        });
-//        t.setDaemon(true);
-//        t.start();
-//        filesList.setItems(FXCollections.observableArrayList());
-//        refreshLocalFilesList();		
-//	}
-//	
-//	public void pressOnDownloadBtn(ActionEvent actionEvent) {
-//        if (tfFileName.getLength() > 0) {
-//            Network.sendMsg(new FileRequest(tfFileName.getText()));
-//            tfFileName.clear();
-//        }
-//    }
-//
-//    public void refreshLocalFilesList() {
-//        if (Platform.isFxApplicationThread()) {
-//            try {
-//                filesList.getItems().clear();
-//                Files.list(Paths.get("client_storage")).map(p -> p.getFileName().toString()).forEach(o -> filesList.getItems().add(o));
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//        } else {
-//            Platform.runLater(() -> {
-//                try {
-//                    filesList.getItems().clear();
-//                    Files.list(Paths.get("client_storage")).map(p -> p.getFileName().toString()).forEach(o -> filesList.getItems().add(o));
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//            });
-//        }
-//    }
 
+	@SuppressWarnings("unchecked")
+	private void initialazeTable(TableView<FileParameters> tableView, TableColumn<FileParameters, String> nameColumn, TableColumn<FileParameters, Integer> sizeColumn, TableColumn<FileParameters, String> dataColumn) {
+		ObservableList<FileParameters> observableList = FXCollections.observableArrayList();
+		observableList.addAll(new FileParameters("Name1", 1, "20 nov"), new FileParameters("name2", 2, "30 oct"));
+		nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+		sizeColumn.setCellValueFactory(new PropertyValueFactory<>("size"));
+		dataColumn.setCellValueFactory(new PropertyValueFactory<>("date"));
+		tableView.getColumns().clear();
+		tableView.getColumns().addAll(localNameColumn,localSizeColumn, localDateColumn);
+		tableView.setItems(observableList);
+	}
 }
