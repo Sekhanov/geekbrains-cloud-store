@@ -1,46 +1,50 @@
 package ru.skhanov.mycloudstorecommon;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.attribute.FileTime;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-//@Getter
-//@Setter
-//@NoArgsConstructor
-//@AllArgsConstructor
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class FileParameters {
 
 	private String name;
-	private Integer size;
-	private String date;
+	private Long size;
+	private FileTime date;
 	
+	public FileParameters(String fileName, String fileStoragePath) {
+		Path path = Paths.get(name + fileStoragePath);
+		this.name = fileName;
+		try {
+			this.size = Files.size(path);
+			BasicFileAttributes basicFileAttributes = Files.readAttributes(path, BasicFileAttributes.class);
+			this.date = basicFileAttributes.lastModifiedTime();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 	
-	
-	public FileParameters(String name, Integer size, String date) {
-		super();
-		this.name = name;
-		this.size = size;
-		this.date = date;
+	public FileParameters(Path path) {
+		this.name = path.toFile().getName();
+		try {
+			this.size = Files.size(path);
+			BasicFileAttributes basicFileAttributes = Files.readAttributes(path, BasicFileAttributes.class);
+			this.date = basicFileAttributes.lastModifiedTime();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
-	public Integer getSize() {
-		return size;
-	}
-	public void setSize(Integer size) {
-		this.size = size;
-	}
-	public String getDate() {
-		return date;
-	}
-	public void setDate(String date) {
-		this.date = date;
-	}
+
 	
 	
 }
