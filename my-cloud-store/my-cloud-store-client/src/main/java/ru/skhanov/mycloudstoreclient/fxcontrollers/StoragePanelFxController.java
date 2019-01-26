@@ -2,9 +2,9 @@ package ru.skhanov.mycloudstoreclient.fxcontrollers;
 
 import java.io.IOException;
 import java.net.URL;
-import java.nio.file.attribute.FileTime;
 import java.util.ResourceBundle;
 
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -16,7 +16,6 @@ import ru.skhanov.mycloudstoreclient.Network;
 import ru.skhanov.mycloudstorecommon.AbstractMessage;
 import ru.skhanov.mycloudstorecommon.FileParameters;
 import ru.skhanov.mycloudstorecommon.FileParametersList;
-import ru.skhanov.mycloudstorecommon.FileRequest;
 
 public class StoragePanelFxController implements Initializable {
 
@@ -30,7 +29,7 @@ public class StoragePanelFxController implements Initializable {
 	private TableColumn<FileParameters, Long> localSizeColumn;
 
 	@FXML
-	private TableColumn<FileParameters, FileTime> localDateColumn;
+	private TableColumn<FileParameters, String> localDateColumn;
 
 	@FXML
 	private TableView<FileParameters> cloudTable;
@@ -42,13 +41,13 @@ public class StoragePanelFxController implements Initializable {
 	private TableColumn<FileParameters, Long> cloudSizeColumn;
 
 	@FXML
-	private TableColumn<FileParameters, FileTime> cloudDateColumn;
+	private TableColumn<FileParameters, String> cloudDateColumn;
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		Network.start();
 		createReciveMessageThread();
-//		requestCloudFileList();
+		requestCloudFileList();
 		initialazeTable(localTable, localNameColumn, localSizeColumn, localDateColumn, new FileParametersList("client_storage"));	
 
 	}
@@ -77,23 +76,48 @@ public class StoragePanelFxController implements Initializable {
 	private void initialazeTable(TableView<FileParameters> tableView,
 			TableColumn<FileParameters, String> nameColumn,
 			TableColumn<FileParameters, Long> sizeColumn,
-			TableColumn<FileParameters, FileTime> dataColumn,
+			TableColumn<FileParameters, String> dataColumn,
 			FileParametersList fileParametersList) {
-		ObservableList<FileParameters> observableList = FXCollections.observableArrayList();
-		fileParametersList.getFileParameterList().forEach(e -> observableList.add(e));
+		if(Platform.isFxApplicationThread()) {
+			ObservableList<FileParameters> observableList = FXCollections.observableArrayList();
+			fileParametersList.getFileParameterList().forEach(e -> observableList.add(e));
 
-		nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-		sizeColumn.setCellValueFactory(new PropertyValueFactory<>("size"));
-		dataColumn.setCellValueFactory(new PropertyValueFactory<>("date"));
-		tableView.getColumns().clear();
-		tableView.getColumns().addAll(localNameColumn, localSizeColumn, localDateColumn);
-		tableView.setItems(observableList);
+			nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+			sizeColumn.setCellValueFactory(new PropertyValueFactory<>("size"));
+			dataColumn.setCellValueFactory(new PropertyValueFactory<>("date"));
+			tableView.getColumns().clear();
+			tableView.getColumns().addAll(localNameColumn, localSizeColumn, localDateColumn);
+			tableView.setItems(observableList);
+		} else {
+			Platform.runLater(() -> {
+				ObservableList<FileParameters> observableList = FXCollections.observableArrayList();
+				fileParametersList.getFileParameterList().forEach(e -> observableList.add(e));
+
+				nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+				sizeColumn.setCellValueFactory(new PropertyValueFactory<>("size"));
+				dataColumn.setCellValueFactory(new PropertyValueFactory<>("date"));
+				tableView.getColumns().clear();
+				tableView.getColumns().addAll(localNameColumn, localSizeColumn, localDateColumn);
+				tableView.setItems(observableList);
+			});
+		}
+
 	}
 
 	public void requestCloudFileList() {
-    	System.out.println("asdfas");
 //      Network.sendMsg(new FileRequest("1.txt"));
       Network.sendMsg(new FileParametersList());
+//    	Network.sendMsg(new TestMessage(new FileParameters("asdf", 1l, "sdfgsd")));
 	}
+	
+//    public void refreshLocalFilesList() {
+//        if (Platform.isFxApplicationThread()) {
+//
+//        } else {
+//            Platform.runLater(() -> {
+//
+//            });
+//        }
+//    }
 
 }

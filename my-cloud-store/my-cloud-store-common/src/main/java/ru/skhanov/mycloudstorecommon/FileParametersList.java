@@ -3,6 +3,7 @@ package ru.skhanov.mycloudstorecommon;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,7 +28,7 @@ public class FileParametersList extends AbstractMessage{
 	public FileParametersList(String fileStorage) {
 		List<FileParameters> fileParameterList = null;
 		try {
-			fileParameterList = Files.list(Paths.get(fileStorage)).map(e -> new FileParameters(e)).collect(Collectors.toList());
+			fileParameterList = Files.list(Paths.get(fileStorage)).map(e -> new FileParameters(e)).collect(Collectors.toCollection(ArrayList::new));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
