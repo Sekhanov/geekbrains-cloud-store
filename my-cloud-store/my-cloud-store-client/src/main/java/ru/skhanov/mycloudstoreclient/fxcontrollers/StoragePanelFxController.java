@@ -2,6 +2,9 @@ package ru.skhanov.mycloudstoreclient.fxcontrollers;
 
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ResourceBundle;
 
 import javafx.application.Platform;
@@ -14,6 +17,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import ru.skhanov.mycloudstoreclient.Network;
 import ru.skhanov.mycloudstorecommon.AbstractMessage;
+import ru.skhanov.mycloudstorecommon.FileMessage;
 import ru.skhanov.mycloudstorecommon.FileParameters;
 import ru.skhanov.mycloudstorecommon.FileParametersList;
 
@@ -104,20 +108,26 @@ public class StoragePanelFxController implements Initializable {
 
 	}
 
-	public void requestCloudFileList() {
+	private void requestCloudFileList() {
 //      Network.sendMsg(new FileRequest("1.txt"));
       Network.sendMsg(new FileParametersList());
 //    	Network.sendMsg(new TestMessage(new FileParameters("asdf", 1l, "sdfgsd")));
 	}
 	
-//    public void refreshLocalFilesList() {
-//        if (Platform.isFxApplicationThread()) {
-//
-//        } else {
-//            Platform.runLater(() -> {
-//
-//            });
-//        }
-//    }
+	
+	public void copyFileToCloud()  {
+		FileParameters fileParameters = localTable.getSelectionModel().getSelectedItem();	
+		Path path = Paths.get("client_storage/" + fileParameters.getName());
+        if (Files.exists(path)) {
+            try {
+				FileMessage fileMessage = new FileMessage(path);				
+				Network.sendMsg(fileMessage);
+				requestCloudFileList();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+        }
+        
+	}
 
 }

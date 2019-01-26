@@ -30,7 +30,6 @@ public class MainHandler extends ChannelInboundHandlerAdapter {
             }
             
             if(msg instanceof FileParametersList) {
-//            	FileParametersList fileParametersList = (FileParametersList) msg;
             	FileParametersList fileParametersList = new FileParametersList("server_storage");
             	ctx.writeAndFlush(fileParametersList);
             }
@@ -38,12 +37,10 @@ public class MainHandler extends ChannelInboundHandlerAdapter {
             if(msg instanceof FileMessage) {
             	FileMessage fileMessage = (FileMessage) msg;
             	Files.write(Paths.get("server_storage/" + fileMessage.getFilename()), fileMessage.getData(), StandardOpenOption.CREATE);
-            	//TODO
+            	
             }
             
-            if(msg instanceof TestMessage) {
-            	System.out.println("testMessage recived");
-            }
+
             
 
         } finally {
