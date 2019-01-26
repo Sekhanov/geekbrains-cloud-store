@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
+import ru.skhanov.mycloudstorecommon.FileParametersList;
 import ru.skhanov.mycloudstorecommon.User;
 import ru.skhanov.mycloudstoreserver.SqlUsersDaoService;
 
@@ -16,5 +17,11 @@ public class ServerTests {
 		User user = sqlUsersDaoService.selectUserByName("testUser");
 		assertEquals("12345", user.getPassword());
 		sqlUsersDaoService.deleteUserByName("testUser");
+	}
+	
+	@Test
+	public void serverStorage() {
+		FileParametersList fileParametersList = new FileParametersList("server_storage");
+		fileParametersList.getFileParameterList().forEach(e -> System.out.println(e.getName()));
 	}
 }

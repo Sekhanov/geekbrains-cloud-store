@@ -78,7 +78,7 @@ xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.skhanov.mycloudstoreclient
                   <Insets left="20.0" />
                </HBox.margin>
             </Button>
-            <Button mnemonicParsing="false" prefHeight="29.0" prefWidth="190.0" text="download">
+            <Button mnemonicParsing="false" prefHeight="29.0" prefWidth="190.0" text="download" onAction="#requestCloudFileList">
                <HBox.margin>
                   <Insets left="10.0" />
                </HBox.margin>

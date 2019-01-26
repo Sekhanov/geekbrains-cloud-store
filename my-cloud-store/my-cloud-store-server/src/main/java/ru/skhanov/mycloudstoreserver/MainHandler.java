@@ -8,6 +8,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.util.ReferenceCountUtil;
 import ru.skhanov.mycloudstorecommon.FileMessage;
+import ru.skhanov.mycloudstorecommon.FileParametersList;
 import ru.skhanov.mycloudstorecommon.FileRequest;
 
 public class MainHandler extends ChannelInboundHandlerAdapter {
@@ -24,6 +25,11 @@ public class MainHandler extends ChannelInboundHandlerAdapter {
                     FileMessage fileMessage = new FileMessage(Paths.get("server_storage/" + fileRequest.getFilename()));
                     ctx.writeAndFlush(fileMessage);
                 }
+            }
+            
+            if(msg instanceof FileParametersList) {
+            	FileParametersList fileParametersList = new FileParametersList("server_storage");
+            	ctx.writeAndFlush(fileParametersList);
             }
             
             if(msg instanceof FileMessage) {
