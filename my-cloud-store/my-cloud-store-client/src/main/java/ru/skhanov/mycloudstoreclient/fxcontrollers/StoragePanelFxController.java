@@ -27,107 +27,84 @@ public class StoragePanelFxController implements Initializable {
 	private TableView<FileParameters> localTable;
 
 	@FXML
-	private TableColumn<FileParameters, String> localNameColumn;
-
-	@FXML
-	private TableColumn<FileParameters, Long> localSizeColumn;
-
-	@FXML
-	private TableColumn<FileParameters, String> localDateColumn;
-
-	@FXML
 	private TableView<FileParameters> cloudTable;
 
-	@FXML
-	private TableColumn<FileParameters, String> cloudNameColumn;
-
-	@FXML
-	private TableColumn<FileParameters, Long> cloudSizeColumn;
-
-	@FXML
-	private TableColumn<FileParameters, String> cloudDateColumn;
-	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		Network.start();
+		initializeTables(localTable);
+		initializeTables(cloudTable);
+		fillTable(localTable, new FileParametersList("client_storage"));
 		createReciveMessageThread();
 		requestCloudFileList();
-		initialazeTable(localTable, localNameColumn, localSizeColumn, localDateColumn, new FileParametersList("client_storage"));	
 
 	}
 
-	private void createReciveMessageThread() {
-        Thread t = new Thread(() -> {
-            try {
-                while (true) {
-                    AbstractMessage abstractMessage = Network.readObject();
-                    if (abstractMessage instanceof FileParametersList) {
-                    	FileParametersList fileParametersList = (FileParametersList) abstractMessage;
-                    	initialazeTable(cloudTable, cloudNameColumn, cloudSizeColumn, cloudDateColumn, fileParametersList);
-                    }
-                }
-            } catch (ClassNotFoundException | IOException e) {
-                e.printStackTrace();
-            } finally {
-                Network.stop();
-            }
-        }, "ClientMsgReciver");
-        t.setDaemon(true);
-        t.start();
-	}
-
-	@SuppressWarnings("unchecked")
-	private void initialazeTable(TableView<FileParameters> tableView,
-			TableColumn<FileParameters, String> nameColumn,
-			TableColumn<FileParameters, Long> sizeColumn,
-			TableColumn<FileParameters, String> dataColumn,
-			FileParametersList fileParametersList) {
-		if(Platform.isFxApplicationThread()) {
-			ObservableList<FileParameters> observableList = FXCollections.observableArrayList();
-			fileParametersList.getFileParameterList().forEach(e -> observableList.add(e));
-
-			nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-			sizeColumn.setCellValueFactory(new PropertyValueFactory<>("size"));
-			dataColumn.setCellValueFactory(new PropertyValueFactory<>("date"));
-			tableView.getColumns().clear();
-			tableView.getColumns().addAll(localNameColumn, localSizeColumn, localDateColumn);
-			tableView.setItems(observableList);
+	private void fillTable(TableView<FileParameters> table, FileParametersList fileParametersList) {
+		if (Platform.isFxApplicationThread()) {
+			table.getItems().clear();
+			fileParametersList.getFileParameterList().forEach(e -> table.getItems().add(e));
 		} else {
 			Platform.runLater(() -> {
-				ObservableList<FileParameters> observableList = FXCollections.observableArrayList();
-				fileParametersList.getFileParameterList().forEach(e -> observableList.add(e));
-
-				nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-				sizeColumn.setCellValueFactory(new PropertyValueFactory<>("size"));
-				dataColumn.setCellValueFactory(new PropertyValueFactory<>("date"));
-				tableView.getColumns().clear();
-				tableView.getColumns().addAll(localNameColumn, localSizeColumn, localDateColumn);
-				tableView.setItems(observableList);
+				table.getItems().clear();
+				fileParametersList.getFileParameterList().forEach(e -> table.getItems().add(e));
 			});
 		}
 
 	}
 
-	private void requestCloudFileList() {
-//      Network.sendMsg(new FileRequest("1.txt"));
-      Network.sendMsg(new FileParametersList());
-//    	Network.sendMsg(new TestMessage(new FileParameters("asdf", 1l, "sdfgsd")));
+	@SuppressWarnings("unchecked")
+	private void initializeTables(TableView<FileParameters> table) {
+		TableColumn<FileParameters, String> localNameColumn = new TableColumn<>("Name");
+		localNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+		localNameColumn.setPrefWidth(270);
+		TableColumn<FileParameters, Integer> localSizeColumn = new TableColumn<>("Size");
+		localSizeColumn.setCellValueFactory(new PropertyValueFactory<>("size"));
+		localSizeColumn.setPrefWidth(85);
+		TableColumn<FileParameters, String> localDateColumn = new TableColumn<>("Date");
+		localDateColumn.setCellValueFactory(new PropertyValueFactory<>("date"));
+		localDateColumn.setPrefWidth(140);
+		table.getColumns().addAll(localNameColumn, localSizeColumn, localDateColumn);
+
 	}
-	
-	
-	public void copyFileToCloud()  {
-		FileParameters fileParameters = localTable.getSelectionModel().getSelectedItem();	
+
+	private void createReciveMessageThread() {
+		Thread t = new Thread(() -> {
+			try {
+				while (true) {
+					AbstractMessage abstractMessage = Network.readObject();
+					if (abstractMessage instanceof FileParametersList) {
+						FileParametersList fileParametersList = (FileParametersList) abstractMessage;
+						fillTable(cloudTable, fileParametersList);
+					}
+				}
+			} catch (ClassNotFoundException | IOException e) {
+				e.printStackTrace();
+			} finally {
+				Network.stop();
+			}
+		}, "ClientMsgReciver");
+		t.setDaemon(true);
+		t.start();
+	}
+
+	private void requestCloudFileList() {
+		Network.sendMsg(new FileParametersList());
+	}
+
+	public void copyFileToCloud() {
+		FileParameters fileParameters = localTable.getSelectionModel().getSelectedItem();
 		Path path = Paths.get("client_storage/" + fileParameters.getName());
-        if (Files.exists(path)) {
-            try {
-				FileMessage fileMessage = new FileMessage(path);				
+		if (Files.exists(path)) {
+			try {
+				FileMessage fileMessage = new FileMessage(path);
 				Network.sendMsg(fileMessage);
 				requestCloudFileList();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-        }
-        
+		}
+
 	}
 
 }
