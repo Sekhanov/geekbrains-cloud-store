@@ -18,8 +18,7 @@ public class SignInFxController implements Initializable {
 	private VBox rootPane;
 
 	@Override
-	public void initialize(URL location, ResourceBundle resources) {
-		Network.start();		
+	public void initialize(URL location, ResourceBundle resources) {				
 	}
 	
 	
