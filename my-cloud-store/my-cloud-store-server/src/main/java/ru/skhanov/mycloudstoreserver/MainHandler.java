@@ -9,6 +9,7 @@ import java.nio.file.StandardOpenOption;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.util.ReferenceCountUtil;
+import ru.skhanov.mycloudstorecommon.AuthentificationMessage;
 import ru.skhanov.mycloudstorecommon.FileMessage;
 import ru.skhanov.mycloudstorecommon.FileOperationsMessage;
 import ru.skhanov.mycloudstorecommon.FileParametersListMessage;
@@ -23,6 +24,26 @@ public class MainHandler extends ChannelInboundHandlerAdapter {
 		try {
 			if (msg == null) {
 				return;
+			}
+			if(msg instanceof AuthentificationMessage) {
+				AuthentificationMessage authMessage = (AuthentificationMessage) msg;
+				SqlUsersDaoService sqlUsersDaoService = new SqlUsersDaoService("jdbc:sqlite:my_cloud_store_server.db", "org.sqlite.JDBC");
+				switch(authMessage.getAuthCommandType()) {
+				case AUTHORIZATION:
+					if (sqlUsersDaoService.authentification(authMessage.getLogin(), authMessage.getPassword())) {
+						//TODO authentification response
+					}
+					break;
+				case CHANE_PASS:
+					break;
+				case DELETE_USER:
+					break;
+				case REGISTRATION:
+					break;
+				default:
+					break;
+				
+				}
 			}
 			if (msg instanceof FileOperationsMessage) {
 				FileOperationsMessage fileOperationsMessage = (FileOperationsMessage) msg;

@@ -24,7 +24,6 @@ public class ClientTests {
 			BasicFileAttributes basicFileAttributes = Files.readAttributes(Paths.get("client_storage/2.txt"), BasicFileAttributes.class);
 			System.out.println(basicFileAttributes.lastModifiedTime());
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}		
 	}

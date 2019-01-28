@@ -34,7 +34,6 @@ public class StoragePanelFxController implements Initializable {
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		Network.start();
 		initializeTables(localTable);
 		initializeTables(cloudTable);
 		refreshLocalFileTable();
