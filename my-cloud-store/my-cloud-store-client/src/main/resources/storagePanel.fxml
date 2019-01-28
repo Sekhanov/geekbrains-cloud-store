@@ -59,12 +59,12 @@
                </HBox.margin>
             </Label>
             <Button mnemonicParsing="false" onAction="#copyFileFromCloud" prefHeight="29.0" prefWidth="100.0" text="copy" />
-            <Button mnemonicParsing="false" prefHeight="29.0" prefWidth="100.0" text="move">
+            <Button mnemonicParsing="false" prefHeight="29.0" prefWidth="100.0" text="move" onAction="#moveFileFromClod">
                <HBox.margin>
                   <Insets left="10.0" />
                </HBox.margin>
             </Button>
-            <Button mnemonicParsing="false" prefHeight="29.0" prefWidth="100.0" text="delete">
+            <Button mnemonicParsing="false" prefHeight="29.0" prefWidth="100.0" text="delete" onAction="#delteFileFromCloud">
                <HBox.margin>
                   <Insets left="10.0" />
                </HBox.margin>

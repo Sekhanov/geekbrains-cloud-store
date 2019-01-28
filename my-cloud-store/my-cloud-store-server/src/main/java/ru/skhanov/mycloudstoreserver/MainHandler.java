@@ -28,15 +28,14 @@ public class MainHandler extends ChannelInboundHandlerAdapter {
 				FileOperationsMessage fileOperationsMessage = (FileOperationsMessage) msg;
 				switch (fileOperationsMessage.getFileOperation()) {
 				case COPY:
-					Path path =  Paths.get(CLOUD_STORAGE + fileOperationsMessage.getFileName());
-					FileMessage fileMessage = new FileMessage(path);
-					ctx.writeAndFlush(fileMessage);
+					copyToClientStorege(ctx, fileOperationsMessage);
 					break;
 				case MOVE:
-					
+					copyToClientStorege(ctx, fileOperationsMessage);
+					deleteFileFromCloudStorage(ctx, fileOperationsMessage);
 					break;
 				case DELETE:
-					
+					deleteFileFromCloudStorage(ctx, fileOperationsMessage);
 					break;
 				default:
 					break;
@@ -44,8 +43,7 @@ public class MainHandler extends ChannelInboundHandlerAdapter {
 			}
 
 			if (msg instanceof FileParametersListMessage) {
-				FileParametersListMessage fileParametersList = new FileParametersListMessage(CLOUD_STORAGE);
-				ctx.writeAndFlush(fileParametersList);
+				sendListOfFileParameters(ctx);
 			}
 			if (msg instanceof FileMessage) {
 				FileMessage fileMessage = (FileMessage) msg;
@@ -55,6 +53,28 @@ public class MainHandler extends ChannelInboundHandlerAdapter {
 		} finally {
 			ReferenceCountUtil.release(msg);
 		}
+	}
+
+
+	private void deleteFileFromCloudStorage(ChannelHandlerContext ctx, FileOperationsMessage fileOperationsMessage)
+			throws IOException {
+		Path path = Paths.get(CLOUD_STORAGE + fileOperationsMessage.getFileName());
+		Files.delete(path);
+		sendListOfFileParameters(ctx);
+	}
+
+
+	private void sendListOfFileParameters(ChannelHandlerContext ctx) {
+		FileParametersListMessage fileParametersList = new FileParametersListMessage(CLOUD_STORAGE);
+		ctx.writeAndFlush(fileParametersList);
+	}
+
+
+	private void copyToClientStorege(ChannelHandlerContext ctx, FileOperationsMessage fileOperationsMessage)
+			throws IOException {
+		Path path =  Paths.get(CLOUD_STORAGE + fileOperationsMessage.getFileName());
+		FileMessage fileMessage = new FileMessage(path);
+		ctx.writeAndFlush(fileMessage);
 	}
 
 

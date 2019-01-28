@@ -133,6 +133,12 @@ public class StoragePanelFxController implements Initializable {
 		}
 	}
 	
+	public void moveFileFromClod() {
+		FileParameters focusedFileLine = cloudTable.getSelectionModel().getSelectedItem();
+		FileOperationsMessage fileOperationsMessage = new FileOperationsMessage(FileOperation.MOVE, focusedFileLine.getName());
+		Network.sendMsg(fileOperationsMessage);
+	}
+	
 	public void deleteLocalFile() {
 		FileParameters focusedFileLine = localTable.getSelectionModel().getSelectedItem();
 		Path path = Paths.get(CLIENT_STORAGE + focusedFileLine.getName());
@@ -144,6 +150,12 @@ public class StoragePanelFxController implements Initializable {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	public void delteFileFromCloud() {
+		FileParameters focusedFileLine = cloudTable.getSelectionModel().getSelectedItem();
+		FileOperationsMessage fileOperationsMessage = new FileOperationsMessage(FileOperation.DELETE, focusedFileLine.getName());
+		Network.sendMsg(fileOperationsMessage);
 	}
 
 }
