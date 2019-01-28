@@ -4,14 +4,17 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class ClientTests {
 
 	@Test
+	@Ignore
 	public void getFileParameters() {
 		assertTrue(true);
 		try {
@@ -23,8 +26,12 @@ public class ClientTests {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-
-		
+		}		
+	}
+	
+	@Test
+	public void nio() {
+		Path path = Paths.get("c:\\temp\\");
+		System.out.println(path.toString());		
 	}
 }

@@ -8,8 +8,6 @@ import java.nio.file.Paths;
 import java.util.ResourceBundle;
 
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TableColumn;
@@ -22,6 +20,8 @@ import ru.skhanov.mycloudstorecommon.FileParameters;
 import ru.skhanov.mycloudstorecommon.FileParametersList;
 
 public class StoragePanelFxController implements Initializable {
+	
+	private static final String  CLIENT_STORAGE = "client_storage/";
 
 	@FXML
 	private TableView<FileParameters> localTable;
@@ -34,13 +34,17 @@ public class StoragePanelFxController implements Initializable {
 		Network.start();
 		initializeTables(localTable);
 		initializeTables(cloudTable);
-		fillTable(localTable, new FileParametersList("client_storage"));
+		refreshLocalFileTable();
 		createReciveMessageThread();
 		requestCloudFileList();
 
 	}
 
-	private void fillTable(TableView<FileParameters> table, FileParametersList fileParametersList) {
+	private void refreshLocalFileTable() {
+		refreshTableEntries(localTable, new FileParametersList(CLIENT_STORAGE));
+	}
+
+	private void refreshTableEntries(TableView<FileParameters> table, FileParametersList fileParametersList) {
 		if (Platform.isFxApplicationThread()) {
 			table.getItems().clear();
 			fileParametersList.getFileParameterList().forEach(e -> table.getItems().add(e));
@@ -50,7 +54,6 @@ public class StoragePanelFxController implements Initializable {
 				fileParametersList.getFileParameterList().forEach(e -> table.getItems().add(e));
 			});
 		}
-
 	}
 
 	@SuppressWarnings("unchecked")
@@ -75,7 +78,7 @@ public class StoragePanelFxController implements Initializable {
 					AbstractMessage abstractMessage = Network.readObject();
 					if (abstractMessage instanceof FileParametersList) {
 						FileParametersList fileParametersList = (FileParametersList) abstractMessage;
-						fillTable(cloudTable, fileParametersList);
+						refreshTableEntries(cloudTable, fileParametersList);
 					}
 				}
 			} catch (ClassNotFoundException | IOException e) {
@@ -92,9 +95,9 @@ public class StoragePanelFxController implements Initializable {
 		Network.sendMsg(new FileParametersList());
 	}
 
-	public void copyFileToCloud() {
+	public Path copyFileToCloud() {
 		FileParameters fileParameters = localTable.getSelectionModel().getSelectedItem();
-		Path path = Paths.get("client_storage/" + fileParameters.getName());
+		Path path = Paths.get(CLIENT_STORAGE + fileParameters.getName());
 		if (Files.exists(path)) {
 			try {
 				FileMessage fileMessage = new FileMessage(path);
@@ -104,7 +107,29 @@ public class StoragePanelFxController implements Initializable {
 				e.printStackTrace();
 			}
 		}
-
+		return path;
+	}
+	
+	public void moveFieToCloud() {
+		try {
+			Files.delete(copyFileToCloud());
+			refreshLocalFileTable();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void deleteLocalFile() {
+		FileParameters fileParameters = localTable.getSelectionModel().getSelectedItem();
+		Path path = Paths.get(CLIENT_STORAGE + fileParameters.getName());
+		if (Files.exists(path)) {
+			try {
+				Files.delete(path);
+				refreshLocalFileTable();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 }
