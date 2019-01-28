@@ -16,7 +16,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class FileParametersList extends AbstractMessage{
+public class FileParametersListMessage extends AbstractMessage{
 
 	/**
 	 * 
@@ -25,7 +25,7 @@ public class FileParametersList extends AbstractMessage{
 	
 	private List<FileParameters> fileParameterList;
 
-	public FileParametersList(String fileStorage) {
+	public FileParametersListMessage(String fileStorage) {
 		List<FileParameters> fileParameterList = null;
 		try {
 			fileParameterList = Files.list(Paths.get(fileStorage)).map(e -> new FileParameters(e)).collect(Collectors.toCollection(ArrayList::new));

@@ -58,7 +58,7 @@
                   <Insets left="40.0" />
                </HBox.margin>
             </Label>
-            <Button mnemonicParsing="false" onAction="#copyFileToCloud" prefHeight="29.0" prefWidth="100.0" text="copy" />
+            <Button mnemonicParsing="false" onAction="#copyFileFromCloud" prefHeight="29.0" prefWidth="100.0" text="copy" />
             <Button mnemonicParsing="false" prefHeight="29.0" prefWidth="100.0" text="move">
                <HBox.margin>
                   <Insets left="10.0" />

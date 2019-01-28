@@ -5,6 +5,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.ResourceBundle;
 
 import javafx.application.Platform;
@@ -16,8 +17,10 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import ru.skhanov.mycloudstoreclient.Network;
 import ru.skhanov.mycloudstorecommon.AbstractMessage;
 import ru.skhanov.mycloudstorecommon.FileMessage;
+import ru.skhanov.mycloudstorecommon.FileOperationsMessage;
 import ru.skhanov.mycloudstorecommon.FileParameters;
-import ru.skhanov.mycloudstorecommon.FileParametersList;
+import ru.skhanov.mycloudstorecommon.FileParametersListMessage;
+import ru.skhanov.mycloudstorecommon.FileOperationsMessage.FileOperation;
 
 public class StoragePanelFxController implements Initializable {
 	
@@ -41,10 +44,10 @@ public class StoragePanelFxController implements Initializable {
 	}
 
 	private void refreshLocalFileTable() {
-		refreshTableEntries(localTable, new FileParametersList(CLIENT_STORAGE));
+		refreshTableEntries(localTable, new FileParametersListMessage(CLIENT_STORAGE));
 	}
 
-	private void refreshTableEntries(TableView<FileParameters> table, FileParametersList fileParametersList) {
+	private void refreshTableEntries(TableView<FileParameters> table, FileParametersListMessage fileParametersList) {
 		if (Platform.isFxApplicationThread()) {
 			table.getItems().clear();
 			fileParametersList.getFileParameterList().forEach(e -> table.getItems().add(e));
@@ -75,10 +78,15 @@ public class StoragePanelFxController implements Initializable {
 		Thread t = new Thread(() -> {
 			try {
 				while (true) {
-					AbstractMessage abstractMessage = Network.readObject();
-					if (abstractMessage instanceof FileParametersList) {
-						FileParametersList fileParametersList = (FileParametersList) abstractMessage;
+					AbstractMessage msg = Network.readObject();
+					if (msg instanceof FileParametersListMessage) {
+						FileParametersListMessage fileParametersList = (FileParametersListMessage) msg;
 						refreshTableEntries(cloudTable, fileParametersList);
+					}
+					if(msg instanceof FileMessage) {
+						FileMessage fileMessage = (FileMessage) msg;
+						Files.write(Paths.get(CLIENT_STORAGE + fileMessage.getFilename()), fileMessage.getData(), StandardOpenOption.CREATE);
+						refreshLocalFileTable();												
 					}
 				}
 			} catch (ClassNotFoundException | IOException e) {
@@ -92,12 +100,12 @@ public class StoragePanelFxController implements Initializable {
 	}
 
 	private void requestCloudFileList() {
-		Network.sendMsg(new FileParametersList());
+		Network.sendMsg(new FileParametersListMessage());
 	}
 
 	public Path copyFileToCloud() {
-		FileParameters fileParameters = localTable.getSelectionModel().getSelectedItem();
-		Path path = Paths.get(CLIENT_STORAGE + fileParameters.getName());
+		FileParameters focusedFileLine = localTable.getSelectionModel().getSelectedItem();
+		Path path = Paths.get(CLIENT_STORAGE + focusedFileLine.getName());
 		if (Files.exists(path)) {
 			try {
 				FileMessage fileMessage = new FileMessage(path);
@@ -110,6 +118,12 @@ public class StoragePanelFxController implements Initializable {
 		return path;
 	}
 	
+	public void copyFileFromCloud() {
+		FileParameters focusedFileLine = cloudTable.getSelectionModel().getSelectedItem();
+		FileOperationsMessage fileOperationsMessage = new FileOperationsMessage(FileOperation.COPY, focusedFileLine.getName());
+		Network.sendMsg(fileOperationsMessage);
+	}
+	
 	public void moveFieToCloud() {
 		try {
 			Files.delete(copyFileToCloud());
@@ -120,8 +134,8 @@ public class StoragePanelFxController implements Initializable {
 	}
 	
 	public void deleteLocalFile() {
-		FileParameters fileParameters = localTable.getSelectionModel().getSelectedItem();
-		Path path = Paths.get(CLIENT_STORAGE + fileParameters.getName());
+		FileParameters focusedFileLine = localTable.getSelectionModel().getSelectedItem();
+		Path path = Paths.get(CLIENT_STORAGE + focusedFileLine.getName());
 		if (Files.exists(path)) {
 			try {
 				Files.delete(path);

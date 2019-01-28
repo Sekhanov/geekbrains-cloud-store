@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import ru.skhanov.mycloudstorecommon.FileParametersList;
+import ru.skhanov.mycloudstorecommon.FileParametersListMessage;
 import ru.skhanov.mycloudstorecommon.User;
 import ru.skhanov.mycloudstoreserver.SqlUsersDaoService;
 
@@ -21,7 +21,7 @@ public class ServerTests {
 	
 	@Test
 	public void serverStorage() {
-		FileParametersList fileParametersList = new FileParametersList("server_storage");
+		FileParametersListMessage fileParametersList = new FileParametersListMessage("server_storage");
 		fileParametersList.getFileParameterList().forEach(e -> System.out.println(e.getName()));
 	}
 }
