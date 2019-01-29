@@ -2,29 +2,27 @@ package ru.skhanov.mycloudstoreclient.fxcontrollers;
 
 import java.io.IOException;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.util.ResourceBundle;
 
-import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import ru.skhanov.mycloudstoreclient.Network;
 import ru.skhanov.mycloudstoreclient.Util;
 import ru.skhanov.mycloudstorecommon.AbstractMessage;
 import ru.skhanov.mycloudstorecommon.AuthentificationMessage;
-import ru.skhanov.mycloudstorecommon.FileMessage;
-import ru.skhanov.mycloudstorecommon.FileParametersListMessage;
 import ru.skhanov.mycloudstorecommon.AuthentificationMessage.AuthCommandType;
 
 public class SignInFxController implements Initializable {
 
 	@FXML
 	private VBox rootPane;
+	
+	@FXML
+	private Label sqlOutputLabel;
 
 	@FXML
 	private TextField loginTextField;
@@ -65,7 +63,14 @@ public class SignInFxController implements Initializable {
 						AuthentificationMessage authentificationMessage = (AuthentificationMessage) msg;
 						switch (authentificationMessage.getAuthCommandType()) {
 						case AUTHORIZATION:
-							Util.fxThreadProcess(this::enterStorage);
+							Util.fxThreadProcess(() -> {
+								if(authentificationMessage.isStatus()) {
+//									enterStorage();
+									sqlOutputLabel.setText("Аутентификация прошла");
+								} else {
+									sqlOutputLabel.setText("Аутентификация не прошла");
+								}
+							});
 							break;
 						case CHANGE_PASS:
 

@@ -17,17 +17,21 @@ import ru.skhanov.mycloudstorecommon.FileParametersListMessage;
 public class MainHandler extends ChannelInboundHandlerAdapter {
 	
 	private static final String CLOUD_STORAGE = "server_storage/";
+	private SqlUsersDaoService sqlUsersDaoService;
+	
+	public MainHandler() {
+		sqlUsersDaoService = new SqlUsersDaoService("jdbc:sqlite:my_cloud_store_server.db", "org.sqlite.JDBC");
+	}
 	
 	@Override
-	public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-
+	public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {		
 		try {
 			if (msg == null) {
 				return;
 			}
 			if(msg instanceof AuthentificationMessage) {
 				AuthentificationMessage authMessage = (AuthentificationMessage) msg;
-				SqlUsersDaoService sqlUsersDaoService = new SqlUsersDaoService("jdbc:sqlite:my_cloud_store_server.db", "org.sqlite.JDBC");
+				
 				switch(authMessage.getAuthCommandType()) {
 				case AUTHORIZATION:
 					if (sqlUsersDaoService.authentification(authMessage.getLogin(), authMessage.getPassword())) {

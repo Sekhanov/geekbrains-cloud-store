@@ -2,13 +2,14 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Hyperlink?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox alignment="TOP_CENTER" minHeight="60.0" prefHeight="768.0" prefWidth="1024.0" fx:id="rootPane" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.skhanov.mycloudstoreclient.fxcontrollers.SignInFxController">
+<VBox fx:id="rootPane" alignment="TOP_CENTER" minHeight="60.0" prefHeight="768.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.skhanov.mycloudstoreclient.fxcontrollers.SignInFxController">
    <children>
       <HBox alignment="CENTER" prefHeight="250.0" prefWidth="1024.0" style="-fx-background-color: #2e3747;">
          <children>
@@ -19,29 +20,45 @@
             </Label>
          </children>
       </HBox>
-      <TextField maxWidth="474.0" prefHeight="60.0" prefWidth="474.0" promptText="login" fx:id="loginTextField">
+      <TextField fx:id="loginTextField" maxWidth="474.0" prefHeight="60.0" prefWidth="474.0" promptText="login">
          <font>
             <Font size="20.0" />
          </font>
          <VBox.margin>
-            <Insets top="100.0" />
+            <Insets top="70.0" />
          </VBox.margin>
       </TextField>
-      <TextField maxHeight="60.0" maxWidth="474.0" prefHeight="60.0" prefWidth="474.0" promptText="password" fx:id="passwordTextField">
+      <TextField fx:id="passwordTextField" maxHeight="60.0" maxWidth="474.0" prefHeight="60.0" prefWidth="474.0" promptText="password">
          <font>
             <Font size="20.0" />
          </font>
          <VBox.margin>
-            <Insets top="50.0" />
+            <Insets top="40.0" />
          </VBox.margin>
       </TextField>
-      <Button mnemonicParsing="false" onAction="#submit" prefHeight="70.0" prefWidth="146.0" text="SIGN IN" textFill="WHITE">
+      <Button mnemonicParsing="false" onAction="#submit" prefHeight="70.0" prefWidth="146.0" style="-fx-background-color: #2e3747;" text="SIGN IN" textFill="WHITE">
          <font>
             <Font name="Bodoni MT Bold" size="26.0" />
          </font>
          <VBox.margin>
-            <Insets top="50.0" />
+            <Insets top="40.0" />
          </VBox.margin>
       </Button>
+      <HBox alignment="CENTER" prefHeight="46.0" prefWidth="1024.0">
+         <VBox.margin>
+            <Insets top="20.0" />
+         </VBox.margin>
+         <children>
+            <Hyperlink text="Registration">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Hyperlink>
+         </children></HBox>
+      <Label fx:id="sqlOutputLabel" alignment="CENTER" contentDisplay="TOP" prefHeight="104.0" prefWidth="654.0" text="" textAlignment="CENTER" textFill="RED" wrapText="true">
+         <VBox.margin>
+            <Insets />
+         </VBox.margin>
+      </Label>
    </children>
 </VBox>

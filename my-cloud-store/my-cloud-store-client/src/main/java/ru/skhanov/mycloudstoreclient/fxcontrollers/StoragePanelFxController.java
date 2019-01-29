@@ -37,7 +37,7 @@ public class StoragePanelFxController implements Initializable {
 		initializeTables(localTable);
 		initializeTables(cloudTable);
 		refreshLocalFileTable();
-		createReciveMessageThread();
+//		createReciveMessageThread();
 		requestCloudFileList();
 
 	}
