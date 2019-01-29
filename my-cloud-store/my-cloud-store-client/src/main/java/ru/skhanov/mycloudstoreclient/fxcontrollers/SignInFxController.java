@@ -58,7 +58,7 @@ public class SignInFxController implements Initializable {
 		Thread t = new Thread(() -> {
 			try {
 				while (true) {
-					AbstractMessage msg = Network.readObject();
+					AbstractMessage msg = Network.getAbsMesExchanger().exchange(null);
 					if (msg instanceof AuthentificationMessage) {
 						AuthentificationMessage authentificationMessage = (AuthentificationMessage) msg;
 						switch (authentificationMessage.getAuthCommandType()) {
@@ -86,7 +86,8 @@ public class SignInFxController implements Initializable {
 						}
 					}
 				}
-			} catch (ClassNotFoundException | IOException e) {
+	
+			} catch (InterruptedException e) {
 				e.printStackTrace();
 			} finally {
 				Network.stop();

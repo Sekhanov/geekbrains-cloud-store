@@ -2,6 +2,7 @@ package ru.skhanov.mycloudstoreclient;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.util.concurrent.Exchanger;
 
 import io.netty.handler.codec.serialization.ObjectDecoderInputStream;
 import io.netty.handler.codec.serialization.ObjectEncoderOutputStream;
@@ -11,6 +12,7 @@ public class Network {
 	private static Socket socket;
 	private static ObjectEncoderOutputStream objectEncoderOutputStream;
 	private static ObjectDecoderInputStream objectDecoderInputStream;
+	private static Exchanger<AbstractMessage> absMesExchanger;
 
 	private static final int MAX_OBJ_SIZE = 100 * 1024 * 1024;
 
@@ -19,10 +21,22 @@ public class Network {
 			socket = new Socket("localhost", 8189);
 			objectEncoderOutputStream = new ObjectEncoderOutputStream(socket.getOutputStream());
 			objectDecoderInputStream = new ObjectDecoderInputStream(socket.getInputStream(), MAX_OBJ_SIZE);
+			absMesExchanger = new Exchanger<>();
+			new MessageReciver(absMesExchanger);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
+
+	public static Exchanger<AbstractMessage> getAbsMesExchanger() {
+		return absMesExchanger;
+	}
+
+	public static void setAbsMesExchanger(Exchanger<AbstractMessage> absMesExchanger) {
+		Network.absMesExchanger = absMesExchanger;
+	}
+
+
 
 
 	public static void stop() {
