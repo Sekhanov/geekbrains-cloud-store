@@ -31,10 +31,13 @@ public class MainHandler extends ChannelInboundHandlerAdapter {
 				switch(authMessage.getAuthCommandType()) {
 				case AUTHORIZATION:
 					if (sqlUsersDaoService.authentification(authMessage.getLogin(), authMessage.getPassword())) {
-						//TODO authentification response
+						authMessage.setStatus(true);
+						ctx.writeAndFlush(authMessage);
+					} else {
+						ctx.writeAndFlush(authMessage);
 					}
 					break;
-				case CHANE_PASS:
+				case CHANGE_PASS:
 					break;
 				case DELETE_USER:
 					break;

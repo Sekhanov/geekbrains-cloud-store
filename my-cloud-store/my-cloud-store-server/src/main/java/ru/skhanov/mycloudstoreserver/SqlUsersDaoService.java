@@ -71,6 +71,9 @@ public class SqlUsersDaoService {
 
 	public boolean authentification(String name, String passwrd) {
 		User user = selectUserByName(name);
+		if(user == null) {
+			return false;
+		}
 		return user.getPassword().equals(passwrd);
 	}
 

@@ -19,7 +19,7 @@
             </Label>
          </children>
       </HBox>
-      <TextField maxWidth="474.0" prefHeight="60.0" prefWidth="474.0" promptText="login" fx:id="login">
+      <TextField maxWidth="474.0" prefHeight="60.0" prefWidth="474.0" promptText="login" fx:id="loginTextField">
          <font>
             <Font size="20.0" />
          </font>
@@ -27,7 +27,7 @@
             <Insets top="100.0" />
          </VBox.margin>
       </TextField>
-      <TextField maxHeight="60.0" maxWidth="474.0" prefHeight="60.0" prefWidth="474.0" promptText="password" fx:id="password">
+      <TextField maxHeight="60.0" maxWidth="474.0" prefHeight="60.0" prefWidth="474.0" promptText="password" fx:id="passwordTextField">
          <font>
             <Font size="20.0" />
          </font>
