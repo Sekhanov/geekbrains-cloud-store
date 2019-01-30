@@ -17,7 +17,6 @@ public class ClientMainClass extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
         Parent rootPane = FXMLLoader.load(getClass().getResource("/signUp.fxml"));
-//        Parent parent = FXMLLoader.load(getClass().getResource("/storagePanel.fxml"));
         primaryStage.setTitle("Box Client");
         primaryStage.setScene(new Scene(rootPane));
         primaryStage.show();        

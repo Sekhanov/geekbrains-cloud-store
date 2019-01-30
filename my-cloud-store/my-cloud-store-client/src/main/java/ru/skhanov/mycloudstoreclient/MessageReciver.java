@@ -4,18 +4,20 @@ import java.io.IOException;
 import java.util.concurrent.Exchanger;
 
 import ru.skhanov.mycloudstorecommon.AbstractMessage;
+import ru.skhanov.mycloudstorecommon.AuthentificationMessage;
+import ru.skhanov.mycloudstorecommon.FileMessage;
+import ru.skhanov.mycloudstorecommon.FileParametersListMessage;
 
 
-/**
- * 
- * Класс для обмена сетевыми сообщениями между разными FX контроллерами
- */
+
 public class MessageReciver implements Runnable {
 	
-	private Exchanger<AbstractMessage> exchanger;
+	private Exchanger<AuthentificationMessage> authExchanger;
+	private Exchanger<AbstractMessage> absExchanger;
 	
-	public MessageReciver(Exchanger<AbstractMessage> exchanger) {
-		this.exchanger = exchanger;
+	public MessageReciver(Exchanger<AuthentificationMessage> authExchanger, Exchanger<AbstractMessage> absExchanger) {
+		this.authExchanger = authExchanger;
+		this.absExchanger = absExchanger;
 		Thread thread = new Thread(this, "ClientMessageExchanger");
 		thread.setDaemon(true);
 		thread.start();
@@ -26,7 +28,15 @@ public class MessageReciver implements Runnable {
 		while(true) {
 			try {
 				AbstractMessage abstractMessage = Network.readObject();
-				exchanger.exchange(abstractMessage);
+				if(abstractMessage instanceof AuthentificationMessage) {
+					AuthentificationMessage authentificationMessage = (AuthentificationMessage) abstractMessage;
+					authExchanger.exchange(authentificationMessage);
+				}
+				if(abstractMessage instanceof FileParametersListMessage ||
+						abstractMessage instanceof FileMessage) {
+					absExchanger.exchange(abstractMessage);
+				}
+					
 			} catch (ClassNotFoundException | IOException e) {
 				e.printStackTrace();
 			} catch (InterruptedException e) {

@@ -58,17 +58,15 @@ public class SignInFxController implements Initializable {
 		Thread t = new Thread(() -> {
 			try {
 				while (true) {
-					AbstractMessage msg = Network.getAbsMesExchanger().exchange(null);
-					if (msg instanceof AuthentificationMessage) {
-						AuthentificationMessage authentificationMessage = (AuthentificationMessage) msg;
+					AuthentificationMessage authentificationMessage = Network.getAuthMesExchanger().exchange(null);			
 						switch (authentificationMessage.getAuthCommandType()) {
 						case AUTHORIZATION:
 							Util.fxThreadProcess(() -> {
 								if(authentificationMessage.isStatus()) {
-//									enterStorage();
-									sqlOutputLabel.setText("Аутентификация прошла");
+									enterStorage();
+//									sqlOutputLabel.setText("pass authentification");
 								} else {
-									sqlOutputLabel.setText("Аутентификация не прошла");
+//									sqlOutputLabel.setText("no pass authentification");
 								}
 							});
 							break;
@@ -84,13 +82,11 @@ public class SignInFxController implements Initializable {
 						default:
 							break;
 						}
-					}
+					
 				}
 	
 			} catch (InterruptedException e) {
 				e.printStackTrace();
-			} finally {
-				Network.stop();
 			}
 		}, "ClientMsgReciver");
 		t.setDaemon(true);

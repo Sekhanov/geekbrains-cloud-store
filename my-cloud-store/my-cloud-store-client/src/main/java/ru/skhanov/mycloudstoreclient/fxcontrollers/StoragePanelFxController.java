@@ -18,9 +18,9 @@ import ru.skhanov.mycloudstoreclient.Network;
 import ru.skhanov.mycloudstorecommon.AbstractMessage;
 import ru.skhanov.mycloudstorecommon.FileMessage;
 import ru.skhanov.mycloudstorecommon.FileOperationsMessage;
+import ru.skhanov.mycloudstorecommon.FileOperationsMessage.FileOperation;
 import ru.skhanov.mycloudstorecommon.FileParameters;
 import ru.skhanov.mycloudstorecommon.FileParametersListMessage;
-import ru.skhanov.mycloudstorecommon.FileOperationsMessage.FileOperation;
 
 public class StoragePanelFxController implements Initializable {
 	
@@ -37,7 +37,7 @@ public class StoragePanelFxController implements Initializable {
 		initializeTables(localTable);
 		initializeTables(cloudTable);
 		refreshLocalFileTable();
-//		createReciveMessageThread();
+		createReciveMessageThread();
 		requestCloudFileList();
 
 	}
@@ -77,7 +77,7 @@ public class StoragePanelFxController implements Initializable {
 		Thread t = new Thread(() -> {
 			try {
 				while (true) {
-					AbstractMessage msg = Network.readObject();
+					AbstractMessage msg = Network.getAbsMesExchanger().exchange(null);
 					if (msg instanceof FileParametersListMessage) {
 						FileParametersListMessage fileParametersList = (FileParametersListMessage) msg;
 						refreshTableEntries(cloudTable, fileParametersList);
@@ -88,7 +88,9 @@ public class StoragePanelFxController implements Initializable {
 						refreshLocalFileTable();												
 					}
 				}
-			} catch (ClassNotFoundException | IOException e) {
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (InterruptedException e) {
 				e.printStackTrace();
 			} finally {
 				Network.stop();

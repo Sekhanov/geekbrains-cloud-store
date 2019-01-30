@@ -6,13 +6,18 @@ import java.util.concurrent.Exchanger;
 
 import io.netty.handler.codec.serialization.ObjectDecoderInputStream;
 import io.netty.handler.codec.serialization.ObjectEncoderOutputStream;
+import lombok.Getter;
 import ru.skhanov.mycloudstorecommon.AbstractMessage;
+import ru.skhanov.mycloudstorecommon.AuthentificationMessage;
 
 public class Network {
 	private static Socket socket;
 	private static ObjectEncoderOutputStream objectEncoderOutputStream;
 	private static ObjectDecoderInputStream objectDecoderInputStream;
+	@Getter
 	private static Exchanger<AbstractMessage> absMesExchanger;
+	@Getter
+	private static Exchanger<AuthentificationMessage> authMesExchanger;
 
 	private static final int MAX_OBJ_SIZE = 100 * 1024 * 1024;
 
@@ -22,22 +27,12 @@ public class Network {
 			objectEncoderOutputStream = new ObjectEncoderOutputStream(socket.getOutputStream());
 			objectDecoderInputStream = new ObjectDecoderInputStream(socket.getInputStream(), MAX_OBJ_SIZE);
 			absMesExchanger = new Exchanger<>();
-			new MessageReciver(absMesExchanger);
+			authMesExchanger = new Exchanger<>();
+			new MessageReciver(authMesExchanger, absMesExchanger);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-
-	public static Exchanger<AbstractMessage> getAbsMesExchanger() {
-		return absMesExchanger;
-	}
-
-	public static void setAbsMesExchanger(Exchanger<AbstractMessage> absMesExchanger) {
-		Network.absMesExchanger = absMesExchanger;
-	}
-
-
-
 
 	public static void stop() {
 		try {
