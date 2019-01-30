@@ -9,7 +9,11 @@ import ru.skhanov.mycloudstorecommon.FileMessage;
 import ru.skhanov.mycloudstorecommon.FileParametersListMessage;
 
 
-
+/**
+ * Thread for changing messages between FX controllers
+ * @author s.khanov
+ *
+ */
 public class MessageReciver implements Runnable {
 	
 	private Exchanger<AuthentificationMessage> authExchanger;

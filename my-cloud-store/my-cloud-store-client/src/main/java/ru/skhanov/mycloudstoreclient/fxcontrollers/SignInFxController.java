@@ -8,11 +8,11 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import ru.skhanov.mycloudstoreclient.Network;
 import ru.skhanov.mycloudstoreclient.Util;
-import ru.skhanov.mycloudstorecommon.AbstractMessage;
 import ru.skhanov.mycloudstorecommon.AuthentificationMessage;
 import ru.skhanov.mycloudstorecommon.AuthentificationMessage.AuthCommandType;
 
@@ -27,8 +27,8 @@ public class SignInFxController implements Initializable {
 	@FXML
 	private TextField loginTextField;
 
-	@FXML
-	private TextField passwordTextField;
+	@FXML	
+	private PasswordField passwordField;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -37,7 +37,7 @@ public class SignInFxController implements Initializable {
 
 	public void submit() {
 		String login = loginTextField.getText();
-		String password = passwordTextField.getText();
+		String password = passwordField.getText();
 		AuthentificationMessage authMessage = new AuthentificationMessage(login, password,
 				AuthCommandType.AUTHORIZATION);
 		Network.sendMsg(authMessage);
@@ -64,9 +64,10 @@ public class SignInFxController implements Initializable {
 							Util.fxThreadProcess(() -> {
 								if(authentificationMessage.isStatus()) {
 									enterStorage();
-//									sqlOutputLabel.setText("pass authentification");
+									System.out.println("authentification passed");
+//									sqlOutputLabel.setText("pass authentication");
 								} else {
-//									sqlOutputLabel.setText("no pass authentification");
+									sqlOutputLabel.setText("authentificaton failed");
 								}
 							});
 							break;

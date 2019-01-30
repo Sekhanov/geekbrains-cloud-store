@@ -1,5 +1,6 @@
 package ru.skhanov.mycloudstoreserver;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -16,7 +17,10 @@ import ru.skhanov.mycloudstorecommon.FileParametersListMessage;
 
 public class MainHandler extends ChannelInboundHandlerAdapter {
 	
-	private static final String CLOUD_STORAGE = "server_storage/";
+//	private static final String CLOUD_STORAGE = "server_storage/";
+	
+	private String userCloudStorage;
+	
 	private SqlUsersDaoService sqlUsersDaoService;
 	
 	public MainHandler() {
@@ -36,6 +40,7 @@ public class MainHandler extends ChannelInboundHandlerAdapter {
 				case AUTHORIZATION:
 					if (sqlUsersDaoService.authentification(authMessage.getLogin(), authMessage.getPassword())) {
 						authMessage.setStatus(true);
+						userCloudStorage = authMessage.getLogin() + "Storage/";
 						ctx.writeAndFlush(authMessage);
 					} else {
 						ctx.writeAndFlush(authMessage);
@@ -75,7 +80,7 @@ public class MainHandler extends ChannelInboundHandlerAdapter {
 			}
 			if (msg instanceof FileMessage) {
 				FileMessage fileMessage = (FileMessage) msg;
-				Files.write(Paths.get(CLOUD_STORAGE + fileMessage.getFilename()), fileMessage.getData(),
+				Files.write(Paths.get(userCloudStorage + fileMessage.getFilename()), fileMessage.getData(),
 						StandardOpenOption.CREATE);
 			}
 		} finally {
@@ -86,21 +91,26 @@ public class MainHandler extends ChannelInboundHandlerAdapter {
 
 	private void deleteFileFromCloudStorage(ChannelHandlerContext ctx, FileOperationsMessage fileOperationsMessage)
 			throws IOException {
-		Path path = Paths.get(CLOUD_STORAGE + fileOperationsMessage.getFileName());
+		Path path = Paths.get(userCloudStorage + fileOperationsMessage.getFileName());
 		Files.delete(path);
 		sendListOfFileParameters(ctx);
 	}
 
 
 	private void sendListOfFileParameters(ChannelHandlerContext ctx) {
-		FileParametersListMessage fileParametersList = new FileParametersListMessage(CLOUD_STORAGE);
+		File directory = new File(userCloudStorage);
+		
+		if(!directory.exists()) {
+			directory.mkdir();			
+		}
+		FileParametersListMessage fileParametersList = new FileParametersListMessage(userCloudStorage);
 		ctx.writeAndFlush(fileParametersList);
 	}
 
 
 	private void copyToClientStorege(ChannelHandlerContext ctx, FileOperationsMessage fileOperationsMessage)
 			throws IOException {
-		Path path =  Paths.get(CLOUD_STORAGE + fileOperationsMessage.getFileName());
+		Path path =  Paths.get(userCloudStorage + fileOperationsMessage.getFileName());
 		FileMessage fileMessage = new FileMessage(path);
 		ctx.writeAndFlush(fileMessage);
 	}
