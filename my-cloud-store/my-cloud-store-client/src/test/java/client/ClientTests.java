@@ -30,7 +30,9 @@ public class ClientTests {
 	
 	@Test
 	public void nio() {
+		
 		Path path = Paths.get("c:\\temp\\");
-		System.out.println(path.toString());		
+		System.out.println(path.toString());
+		
 	}
 }

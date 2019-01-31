@@ -1,5 +1,6 @@
 package ru.skhanov.mycloudstoreclient.fxcontrollers;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
@@ -14,6 +15,10 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+import javafx.stage.Window;
 import ru.skhanov.mycloudstoreclient.Network;
 import ru.skhanov.mycloudstorecommon.AbstractMessage;
 import ru.skhanov.mycloudstorecommon.FileMessage;
@@ -24,13 +29,16 @@ import ru.skhanov.mycloudstorecommon.FileParametersListMessage;
 
 public class StoragePanelFxController implements Initializable {
 	
-	private static final String  CLIENT_STORAGE = "client_storage/";
-
+	private static final String  CLIENT_STORAGE = "client_storage/";	
+	
+	@FXML
+	private VBox rootPane;
 	@FXML
 	private TableView<FileParameters> localTable;
-
 	@FXML
 	private TableView<FileParameters> cloudTable;
+	
+	private FileChooser fileChooser = new FileChooser();
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -157,6 +165,18 @@ public class StoragePanelFxController implements Initializable {
 		FileParameters focusedFileLine = cloudTable.getSelectionModel().getSelectedItem();
 		FileOperationsMessage fileOperationsMessage = new FileOperationsMessage(FileOperation.DELETE, focusedFileLine.getName());
 		Network.sendMsg(fileOperationsMessage);
+	}
+	
+	public void uploadFileFormOs() {
+		Window window = this.rootPane.getScene().getWindow();
+		File file =  fileChooser.showOpenDialog(window);
+		try {
+			byte[] data = Files.readAllBytes(file.toPath());
+			Files.write(Paths.get(CLIENT_STORAGE + file.getName()), data, StandardOpenOption.CREATE);
+			refreshLocalFileTable();	
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 }
