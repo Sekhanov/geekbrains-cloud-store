@@ -17,7 +17,6 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
-import javafx.stage.Stage;
 import javafx.stage.Window;
 import ru.skhanov.mycloudstoreclient.Network;
 import ru.skhanov.mycloudstorecommon.AbstractMessage;
@@ -47,7 +46,6 @@ public class StoragePanelFxController implements Initializable {
 		refreshLocalFileTable();
 		createReciveMessageThread();
 		requestCloudFileList();
-
 	}
 
 	private void refreshLocalFileTable() {
@@ -167,7 +165,7 @@ public class StoragePanelFxController implements Initializable {
 		Network.sendMsg(fileOperationsMessage);
 	}
 	
-	public void uploadFileFormOs() {
+	public void uploadFileFormOs() {	
 		Window window = this.rootPane.getScene().getWindow();
 		File file =  fileChooser.showOpenDialog(window);
 		try {
@@ -177,6 +175,23 @@ public class StoragePanelFxController implements Initializable {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public void downloadFileToOs( ) {
+		Window window = this.rootPane.getScene().getWindow();
+		FileParameters focusedFileLine = localTable.getSelectionModel().getSelectedItem();
+		Path locStoragePath = Paths.get(CLIENT_STORAGE + focusedFileLine.getName());
+		try {
+			byte[] data = Files.readAllBytes(locStoragePath);
+			fileChooser.setInitialFileName(focusedFileLine.getName());
+			File file = fileChooser.showSaveDialog(window);
+			Path osPath = file.toPath();
+			Files.write(osPath, data, StandardOpenOption.CREATE);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		
 	}
 
 }
