@@ -6,6 +6,10 @@ import java.nio.file.Path;
 
 import lombok.Getter;
 
+
+/**
+ * Тип сообщения для передачи файла по сети
+ */
 @Getter
 public class FileMessage extends AbstractMessage {	
  

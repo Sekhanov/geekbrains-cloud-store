@@ -4,6 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+
+/**
+ * Класс для передачи с клиента на сервер необходимой операции
+ * с файлом в облачном хранилище
+ */
 @Getter
 @Setter
 @AllArgsConstructor

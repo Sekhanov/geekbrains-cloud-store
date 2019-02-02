@@ -5,6 +5,10 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
+
+/**
+ * Тип сообщения для обмена с сервером информации об аутентификации пользователей
+ */
 @Getter
 @Setter
 @RequiredArgsConstructor

@@ -10,6 +10,9 @@ import lombok.Getter;
 import ru.skhanov.mycloudstorecommon.AbstractMessage;
 import ru.skhanov.mycloudstorecommon.AuthentificationMessage;
 
+/**
+ * Класс обслуживающий сеть со стороны клиента
+ */
 public class Network {
 	private static Socket socket;
 	private static ObjectEncoderOutputStream objectEncoderOutputStream;

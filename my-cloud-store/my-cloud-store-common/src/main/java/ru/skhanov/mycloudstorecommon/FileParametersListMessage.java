@@ -12,15 +12,16 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+
+/**
+ *  Класс для передачи сообщения со  списком {@link FileParameters} между сервером и клиеном
+ */
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class FileParametersListMessage extends AbstractMessage{
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 122661028145564867L;
 	
 	private List<FileParameters> fileParameterList;

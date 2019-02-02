@@ -15,9 +15,11 @@ import ru.skhanov.mycloudstorecommon.FileMessage;
 import ru.skhanov.mycloudstorecommon.FileOperationsMessage;
 import ru.skhanov.mycloudstorecommon.FileParametersListMessage;
 
+
+/**
+ * Класс-обработчик всех входящих десериализованных классов-сообщений от клиента
+ */
 public class MainHandler extends ChannelInboundHandlerAdapter {
-	
-//	private static final String CLOUD_STORAGE = "server_storage/";
 	
 	private String userCloudStorage;
 	
@@ -34,45 +36,10 @@ public class MainHandler extends ChannelInboundHandlerAdapter {
 				return;
 			}
 			if(msg instanceof AuthentificationMessage) {
-				AuthentificationMessage authMessage = (AuthentificationMessage) msg;
-				
-				switch(authMessage.getAuthCommandType()) {
-				case AUTHORIZATION:
-					if (sqlUsersDaoService.authentification(authMessage.getLogin(), authMessage.getPassword())) {
-						authMessage.setStatus(true);
-						userCloudStorage = authMessage.getLogin() + "Storage/";
-						ctx.writeAndFlush(authMessage);
-					} else {
-						ctx.writeAndFlush(authMessage);
-					}
-					break;
-				case CHANGE_PASS:
-					break;
-				case DELETE_USER:
-					break;
-				case REGISTRATION:
-					break;
-				default:
-					break;
-				
-				}
+				authMessageHandler(ctx, msg);
 			}
 			if (msg instanceof FileOperationsMessage) {
-				FileOperationsMessage fileOperationsMessage = (FileOperationsMessage) msg;
-				switch (fileOperationsMessage.getFileOperation()) {
-				case COPY:
-					copyToClientStorege(ctx, fileOperationsMessage);
-					break;
-				case MOVE:
-					copyToClientStorege(ctx, fileOperationsMessage);
-					deleteFileFromCloudStorage(ctx, fileOperationsMessage);
-					break;
-				case DELETE:
-					deleteFileFromCloudStorage(ctx, fileOperationsMessage);
-					break;
-				default:
-					break;
-				}
+				fileOperationMessageHandler(ctx, msg);
 			}
 
 			if (msg instanceof FileParametersListMessage) {
@@ -85,6 +52,47 @@ public class MainHandler extends ChannelInboundHandlerAdapter {
 			}
 		} finally {
 			ReferenceCountUtil.release(msg);
+		}
+	}
+
+	private void fileOperationMessageHandler(ChannelHandlerContext ctx, Object msg) throws IOException {
+		FileOperationsMessage fileOperationsMessage = (FileOperationsMessage) msg;
+		switch (fileOperationsMessage.getFileOperation()) {
+		case COPY:
+			copyToClientStorege(ctx, fileOperationsMessage);
+			break;
+		case MOVE:
+			copyToClientStorege(ctx, fileOperationsMessage);
+			deleteFileFromCloudStorage(ctx, fileOperationsMessage);
+			break;
+		case DELETE:
+			deleteFileFromCloudStorage(ctx, fileOperationsMessage);
+			break;
+		default:
+			break;
+		}
+	}
+
+	private void authMessageHandler(ChannelHandlerContext ctx, Object msg) {
+		AuthentificationMessage authMessage = (AuthentificationMessage) msg;
+		switch(authMessage.getAuthCommandType()) {
+		case AUTHORIZATION:
+			if (sqlUsersDaoService.authentification(authMessage.getLogin(), authMessage.getPassword())) {
+				authMessage.setStatus(true);
+				userCloudStorage = authMessage.getLogin() + "Storage/";
+				ctx.writeAndFlush(authMessage);
+			} else {
+				ctx.writeAndFlush(authMessage);
+			}
+			break;
+		case CHANGE_PASS:
+			break;
+		case DELETE_USER:
+			break;
+		case REGISTRATION:
+			break;
+		default:
+			break;
 		}
 	}
 

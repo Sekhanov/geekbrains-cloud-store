@@ -18,8 +18,10 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
+import ru.skhanov.mycloudstoreclient.MessageReciver;
 import ru.skhanov.mycloudstoreclient.Network;
 import ru.skhanov.mycloudstorecommon.AbstractMessage;
+import ru.skhanov.mycloudstorecommon.AuthentificationMessage;
 import ru.skhanov.mycloudstorecommon.FileMessage;
 import ru.skhanov.mycloudstorecommon.FileOperationsMessage;
 import ru.skhanov.mycloudstorecommon.FileOperationsMessage.FileOperation;
@@ -79,6 +81,10 @@ public class StoragePanelFxController implements Initializable {
 
 	}
 
+	/**
+	 * Метод создает поток, который обменивается и обрабатывает сообщения
+	 *  типа {@link AbstractMessage} из {@link MessageReciver}
+	 */
 	private void createReciveMessageThread() {
 		Thread t = new Thread(() -> {
 			try {
@@ -189,8 +195,10 @@ public class StoragePanelFxController implements Initializable {
 			Files.write(osPath, data, StandardOpenOption.CREATE);
 		} catch (IOException e) {
 			e.printStackTrace();
-		}
-		
+		}	
+	}
+	
+	public void exitToSingUp() {
 		
 	}
 

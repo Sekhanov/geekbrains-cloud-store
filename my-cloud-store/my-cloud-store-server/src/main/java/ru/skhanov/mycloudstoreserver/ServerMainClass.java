@@ -12,6 +12,7 @@ import io.netty.handler.codec.serialization.ClassResolvers;
 import io.netty.handler.codec.serialization.ObjectDecoder;
 import io.netty.handler.codec.serialization.ObjectEncoder;
 
+
 public class ServerMainClass {
     private static final int MAX_OBJ_SIZE = 100 * 1024 * 1024;
 

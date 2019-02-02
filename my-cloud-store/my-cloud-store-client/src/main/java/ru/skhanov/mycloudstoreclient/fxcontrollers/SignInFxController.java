@@ -11,6 +11,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
+import ru.skhanov.mycloudstoreclient.MessageReciver;
 import ru.skhanov.mycloudstoreclient.Network;
 import ru.skhanov.mycloudstoreclient.Util;
 import ru.skhanov.mycloudstorecommon.AuthentificationMessage;
@@ -35,6 +36,9 @@ public class SignInFxController implements Initializable {
 		createReciveMessageThread();
 	}
 
+	/**
+	 *<Button text="SIGN IN" onAction="#submit/>
+	 */
 	public void submit() {
 		String login = loginTextField.getText();
 		String password = passwordField.getText();
@@ -54,6 +58,10 @@ public class SignInFxController implements Initializable {
 
 	}
 
+	/**
+	 * Метод создает поток, который обменивается и обрабатывает сообщения
+	 *  типа {@link AuthentificationMessage} из {@link MessageReciver}
+	 */
 	private void createReciveMessageThread() {
 		Thread t = new Thread(() -> {
 			try {
@@ -65,7 +73,6 @@ public class SignInFxController implements Initializable {
 								if(authentificationMessage.isStatus()) {
 									enterStorage();
 									System.out.println("authentification passed");
-//									sqlOutputLabel.setText("pass authentication");
 								} else {
 									sqlOutputLabel.setText("authentificaton failed");
 								}

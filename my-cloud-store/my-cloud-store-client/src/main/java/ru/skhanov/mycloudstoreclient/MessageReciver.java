@@ -10,9 +10,8 @@ import ru.skhanov.mycloudstorecommon.FileParametersListMessage;
 
 
 /**
- * Thread for changing messages between FX controllers
- * @author s.khanov
- *
+ * Класс создает поток, который получает от сервера и обменивается  сообщениями с другими потоками по средствам
+ * {@link Exchanger}
  */
 public class MessageReciver implements Runnable {
 	

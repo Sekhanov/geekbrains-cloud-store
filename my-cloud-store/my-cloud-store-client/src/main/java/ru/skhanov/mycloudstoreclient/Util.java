@@ -2,6 +2,7 @@ package ru.skhanov.mycloudstoreclient;
 
 import javafx.application.Platform;
 
+
 public class Util {
 
 	public static void fxThreadProcess(Runnable runnable) {

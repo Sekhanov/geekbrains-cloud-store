@@ -17,7 +17,7 @@ public class ClientMainClass extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
         Parent rootPane = FXMLLoader.load(getClass().getResource("/signUp.fxml"));
-        primaryStage.setTitle("Box Client");
+        primaryStage.setTitle("My Cloud Storage");
         primaryStage.setScene(new Scene(rootPane));
         primaryStage.show();        
     }

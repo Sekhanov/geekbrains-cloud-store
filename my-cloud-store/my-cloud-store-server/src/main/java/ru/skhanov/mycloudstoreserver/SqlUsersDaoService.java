@@ -6,9 +6,22 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import ru.skhanov.mycloudstorecommon.User;
+import lombok.Getter;
+import lombok.Setter;
 
+
+/**
+ * Класс для взаимодействия с таблицей Users в базе данных
+ * для реализации механизма аутентификации в приложении
+ */
 public class SqlUsersDaoService {
+	
+	@Getter
+	@Setter
+	public class User {
+		String name;
+		String password;
+	}
 
 	private Connection connection;
 

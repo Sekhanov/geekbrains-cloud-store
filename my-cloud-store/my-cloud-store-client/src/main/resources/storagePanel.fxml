@@ -22,7 +22,7 @@
 					<items>
 						<MenuItem mnemonicParsing="false" text="Upload" onAction="#uploadFileFormOs"/>
 						<MenuItem mnemonicParsing="false" text="Download" onAction="#downloadFileToOs" />
-						<MenuItem mnemonicParsing="false" text="Exit" />
+						<MenuItem mnemonicParsing="false" text="Exit" onAction="#exitToSingUp"/>
 					</items>
 				</Menu>
 				<Menu mnemonicParsing="false" text="Help">
