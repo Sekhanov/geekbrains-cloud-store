@@ -13,7 +13,7 @@
    <children>
       <VBox alignment="CENTER" prefHeight="80.0" prefWidth="100.0" style="-fx-background-color: #edeaea;">
          <children>
-            <Label alignment="TOP_LEFT" text="User" textFill="#2e3747" fx:id="userLabel">
+            <Label fx:id="userLabel" alignment="TOP_LEFT" text="User" textFill="#2e3747">
                <font>
                   <Font name="Bauhaus 93" size="40.0" />
                </font>
@@ -26,7 +26,7 @@
             <Insets bottom="40.0" />
          </VBox.margin>
       </VBox>
-      <TextField maxWidth="300.0" minHeight="40.0" promptText="name">
+      <TextField fx:id="loginField" maxWidth="300.0" minHeight="40.0" promptText="login">
          <VBox.margin>
             <Insets bottom="30.0" />
          </VBox.margin>
@@ -34,7 +34,7 @@
             <Font size="20.0" />
          </font>
       </TextField>
-      <PasswordField maxWidth="300.0" minHeight="40.0" promptText="pass">
+      <PasswordField fx:id="passwordField" maxWidth="300.0" minHeight="40.0" promptText="pass">
          <VBox.margin>
             <Insets bottom="30.0" />
          </VBox.margin>
@@ -42,22 +42,14 @@
             <Font size="20.0" />
          </font>
       </PasswordField>
-      <PasswordField maxWidth="300.0" minHeight="40.0" promptText="confirm pass">
+      <PasswordField fx:id="confirmPasswordField" maxWidth="300.0" minHeight="40.0" promptText="confirm pass">
          <font>
             <Font size="20.0" />
          </font>
       </PasswordField>
       <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
          <children>
-            <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="100.0" text="ENTER" textFill="#2e3747">
-               <font>
-                  <Font name="System Bold" size="15.0" />
-               </font>
-            </Button>
-            <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="100.0" text="CANCEL">
-               <HBox.margin>
-                  <Insets left="50.0" />
-               </HBox.margin>
+            <Button mnemonicParsing="false" onAction="#enter" prefHeight="40.0" prefWidth="100.0" text="ENTER" textFill="#2e3747">
                <font>
                   <Font name="System Bold" size="15.0" />
                </font>

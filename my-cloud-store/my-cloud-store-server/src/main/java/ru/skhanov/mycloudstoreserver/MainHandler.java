@@ -86,10 +86,18 @@ public class MainHandler extends ChannelInboundHandlerAdapter {
 			}
 			break;
 		case CHANGE_PASS:
+			
 			break;
 		case DELETE_USER:
 			break;
 		case REGISTRATION:
+			if(sqlUsersDaoService.selectUserByName(authMessage.getLogin()) == null) {
+				authMessage.setStatus(true);
+				sqlUsersDaoService.insertUser(authMessage.getLogin(), authMessage.getPassword());
+				ctx.writeAndFlush(authMessage);				
+			} else {
+				ctx.writeAndFlush(authMessage);
+			}
 			break;
 		default:
 			break;
