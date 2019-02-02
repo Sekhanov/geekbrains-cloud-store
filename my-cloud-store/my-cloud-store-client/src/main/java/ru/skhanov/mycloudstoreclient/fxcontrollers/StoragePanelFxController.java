@@ -21,7 +21,6 @@ import javafx.stage.Window;
 import ru.skhanov.mycloudstoreclient.MessageReciver;
 import ru.skhanov.mycloudstoreclient.Network;
 import ru.skhanov.mycloudstorecommon.AbstractMessage;
-import ru.skhanov.mycloudstorecommon.AuthentificationMessage;
 import ru.skhanov.mycloudstorecommon.FileMessage;
 import ru.skhanov.mycloudstorecommon.FileOperationsMessage;
 import ru.skhanov.mycloudstorecommon.FileOperationsMessage.FileOperation;
@@ -112,11 +111,13 @@ public class StoragePanelFxController implements Initializable {
 		t.start();
 	}
 
+	
 	private void requestCloudFileList() {
 		Network.sendMsg(new FileParametersListMessage());
 	}
 
-	public Path copyFileToCloud() {
+	@FXML
+	private Path copyFileToCloud() {
 		FileParameters focusedFileLine = localTable.getSelectionModel().getSelectedItem();
 		Path path = Paths.get(CLIENT_STORAGE + focusedFileLine.getName());
 		if (Files.exists(path)) {
@@ -131,13 +132,15 @@ public class StoragePanelFxController implements Initializable {
 		return path;
 	}
 	
-	public void copyFileFromCloud() {
+	@FXML
+	private void copyFileFromCloud() {
 		FileParameters focusedFileLine = cloudTable.getSelectionModel().getSelectedItem();
 		FileOperationsMessage fileOperationsMessage = new FileOperationsMessage(FileOperation.COPY, focusedFileLine.getName());
 		Network.sendMsg(fileOperationsMessage);
 	}
 	
-	public void moveFieToCloud() {
+	@FXML
+	private void moveFileToCloud() {
 		try {
 			Files.delete(copyFileToCloud());
 			refreshLocalFileTable();
@@ -146,13 +149,15 @@ public class StoragePanelFxController implements Initializable {
 		}
 	}
 	
-	public void moveFileFromClod() {
+	@FXML
+	private void moveFileFromClod() {
 		FileParameters focusedFileLine = cloudTable.getSelectionModel().getSelectedItem();
 		FileOperationsMessage fileOperationsMessage = new FileOperationsMessage(FileOperation.MOVE, focusedFileLine.getName());
 		Network.sendMsg(fileOperationsMessage);
 	}
 	
-	public void deleteLocalFile() {
+	@FXML
+	private void deleteLocalFile() {
 		FileParameters focusedFileLine = localTable.getSelectionModel().getSelectedItem();
 		Path path = Paths.get(CLIENT_STORAGE + focusedFileLine.getName());
 		if (Files.exists(path)) {
@@ -165,13 +170,15 @@ public class StoragePanelFxController implements Initializable {
 		}
 	}
 	
-	public void delteFileFromCloud() {
+	@FXML
+	private void delteFileFromCloud() {
 		FileParameters focusedFileLine = cloudTable.getSelectionModel().getSelectedItem();
 		FileOperationsMessage fileOperationsMessage = new FileOperationsMessage(FileOperation.DELETE, focusedFileLine.getName());
 		Network.sendMsg(fileOperationsMessage);
 	}
 	
-	public void uploadFileFormOs() {	
+	@FXML
+	private void uploadFileFormOs() {	
 		Window window = this.rootPane.getScene().getWindow();
 		File file =  fileChooser.showOpenDialog(window);
 		try {
@@ -183,7 +190,8 @@ public class StoragePanelFxController implements Initializable {
 		}
 	}
 	
-	public void downloadFileToOs( ) {
+	@FXML
+	private void downloadFileToOs( ) {
 		Window window = this.rootPane.getScene().getWindow();
 		FileParameters focusedFileLine = localTable.getSelectionModel().getSelectedItem();
 		Path locStoragePath = Paths.get(CLIENT_STORAGE + focusedFileLine.getName());
@@ -198,7 +206,8 @@ public class StoragePanelFxController implements Initializable {
 		}	
 	}
 	
-	public void exitToSingUp() {
+	@FXML
+	private void exitToSingUp() {
 		
 	}
 
