@@ -29,7 +29,7 @@
             <Insets top="70.0" />
          </VBox.margin>
       </TextField>
-      <PasswordField fx:id="passwordField" maxWidth="474.0" prefHeight="60.0" prefWidth="474.0" promptText="password" onAction="#submit">
+      <PasswordField fx:id="passwordField" maxWidth="474.0" onAction="#submit" prefHeight="60.0" prefWidth="474.0" promptText="password">
          <font>
             <Font size="20.0" />
          </font>
@@ -53,12 +53,12 @@
             <Insets top="20.0" />
          </VBox.margin>
          <children>
-            <Hyperlink text="Registration" onAction="#registration">
+            <Hyperlink onAction="#registration" text="Registration">
                <font>
                   <Font size="20.0" />
                </font>
             </Hyperlink>
-            <Hyperlink text="Change Password" onAction="#changePassword">
+            <Hyperlink onAction="#changePassword" text="Change Password">
                <font>
                   <Font size="20.0" />
                </font>
@@ -66,7 +66,7 @@
                   <Insets left="10.0" />
                </HBox.margin>
             </Hyperlink>
-            <Hyperlink text="Delete user storege" onAction="#deleteUser">
+            <Hyperlink onAction="#deleteUser" text="Delete user storege">
                <font>
                   <Font size="20.0" />
                </font>
@@ -79,6 +79,9 @@
          <VBox.margin>
             <Insets />
          </VBox.margin>
+         <font>
+            <Font size="16.0" />
+         </font>
       </Label>
    </children>
 </VBox>

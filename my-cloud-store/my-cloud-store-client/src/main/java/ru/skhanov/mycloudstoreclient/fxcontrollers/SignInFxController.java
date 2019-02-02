@@ -7,7 +7,6 @@ import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
@@ -117,14 +116,20 @@ public class SignInFxController implements Initializable {
 
 						break;
 					case DELETE_USER:
-
+						Util.fxThreadProcess(() -> {
+							if(authentificationMessage.isStatus()) {
+								sqlOutputLabel.setText("user successfully deleted");
+							} else {
+								sqlOutputLabel.setText("no user with login '" + authentificationMessage.getLogin() + "' of password incorrect");
+							}
+						});
 						break;
 					case REGISTRATION:
 						Util.fxThreadProcess(() -> {
 							if (authentificationMessage.isStatus()) {
 								sqlOutputLabel.setText("user successfully registered");
 							} else {
-								sqlOutputLabel.setText("user alredy exist");
+								sqlOutputLabel.setText("user with login '" + authentificationMessage.getLogin() + "' alredy exist");
 							}
 						});
 						break;

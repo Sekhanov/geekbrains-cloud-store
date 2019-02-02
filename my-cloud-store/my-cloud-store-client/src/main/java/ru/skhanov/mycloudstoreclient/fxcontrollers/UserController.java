@@ -5,15 +5,21 @@ import java.util.ResourceBundle;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import ru.skhanov.mycloudstoreclient.Network;
 import ru.skhanov.mycloudstorecommon.AuthentificationMessage;
 import ru.skhanov.mycloudstorecommon.AuthentificationMessage.AuthCommandType;
 
 public class UserController implements Initializable {
+	
+	@FXML
+	private VBox rootPane;
 	
 	@FXML
 	private Label userLabel;
@@ -51,7 +57,8 @@ public class UserController implements Initializable {
 		} else {
 			//TODO user feedBack
 		}
-
+		 Stage stage = (Stage) rootPane.getScene().getWindow();
+		 stage.close();
 	}
 
 }
