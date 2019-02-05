@@ -7,6 +7,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 
+import javax.lang.model.element.Element;
+
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.util.ReferenceCountUtil;
@@ -86,7 +88,13 @@ public class MainHandler extends ChannelInboundHandlerAdapter {
 			}
 			break;
 		case CHANGE_PASS:
-			//TODO change pass
+			if(sqlUsersDaoService.changePass(authMessage.getLogin(), authMessage.getPassword(),
+					authMessage.getNewPassword())) {
+				authMessage.setStatus(true);
+				ctx.writeAndFlush(authMessage);
+			} else {
+				ctx.writeAndFlush(authMessage);
+			}
 			break;
 		case DELETE_USER:
 			if(sqlUsersDaoService.authentification(authMessage.getLogin(), authMessage.getPassword())) {

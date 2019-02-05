@@ -113,14 +113,19 @@ public class SignInFxController implements Initializable {
 						});
 						break;
 					case CHANGE_PASS:
-
-						break;
+						Util.fxThreadProcess(() -> {
+							if(authentificationMessage.isStatus()) {
+								sqlOutputLabel.setText("user password with login '"  + authentificationMessage.getLogin() + "' successfully changed");
+							} else {
+								sqlOutputLabel.setText("no user with login '" + authentificationMessage.getLogin() + "' or password incorrect");
+							}
+						});
 					case DELETE_USER:
 						Util.fxThreadProcess(() -> {
 							if(authentificationMessage.isStatus()) {
-								sqlOutputLabel.setText("user successfully deleted");
+								sqlOutputLabel.setText("user with login '"  + authentificationMessage.getLogin() + "' successfully deleted");
 							} else {
-								sqlOutputLabel.setText("no user with login '" + authentificationMessage.getLogin() + "' of password incorrect");
+								sqlOutputLabel.setText("no user with login '" + authentificationMessage.getLogin() + "' or password incorrect");
 							}
 						});
 						break;
@@ -142,7 +147,7 @@ public class SignInFxController implements Initializable {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-		}, "ClientMsgReciver");
+		}, "AuthMsgReciever");
 		t.setDaemon(true);
 		t.start();
 	}

@@ -19,7 +19,7 @@ public class SqlUsersDaoService {
 	@Getter
 	@Setter
 	public class User {
-		String name;
+		String login;
 		String password;
 	}
 
@@ -54,26 +54,26 @@ public class SqlUsersDaoService {
 		}
 	}
 
-	public void deleteUserByName(String name) {
+	public void deleteUserByName(String login) {
 		String sqlString = "DELETE FROM users WHERE name = ?";
 		PreparedStatement preparedStatement = null;
 		try {
-			preparedStatement = createPreparedStatement(sqlString, name);
+			preparedStatement = createPreparedStatement(sqlString, login);
 			preparedStatement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
 
-	public User selectUserByName(String name) {
+	public User selectUserByName(String login) {
 		String sqlString = "SELECT name, password FROM users WHERE name = ?";
 		User user = null;
 		try {
-			PreparedStatement preparedStatement = createPreparedStatement(sqlString, name);
+			PreparedStatement preparedStatement = createPreparedStatement(sqlString, login);
 			ResultSet resultSet = preparedStatement.executeQuery();
 			while (resultSet.next()) {
 				user = new User();
-				user.setName(resultSet.getString("name"));
+				user.setLogin(resultSet.getString("name"));
 				user.setPassword(resultSet.getString("password"));
 			}
 		} catch (SQLException e) {
@@ -82,12 +82,27 @@ public class SqlUsersDaoService {
 		return user;
 	}
 
-	public boolean authentification(String name, String passwrd) {
-		User user = selectUserByName(name);
+	public boolean authentification(String login, String passwrd) {
+		User user = selectUserByName(login);
 		if(user == null) {
 			return false;
 		}
 		return user.getPassword().equals(passwrd);
+	}
+	
+	public boolean changePass(String login, String oldPass, String newPass) {
+		if(authentification(login, oldPass)) {
+			String sqlString = "UPDATE users SET password = ? WHERE name = ?";
+			try {
+				PreparedStatement preparedStatement = createPreparedStatement(sqlString, newPass, login);
+				preparedStatement.executeUpdate();
+			} catch (SQLException e) {	
+				e.printStackTrace();
+				return false;
+			}
+			return true;
+		}
+		return false;
 	}
 
 }

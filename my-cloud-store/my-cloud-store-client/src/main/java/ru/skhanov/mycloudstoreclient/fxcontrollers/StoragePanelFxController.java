@@ -11,13 +11,16 @@ import java.util.ResourceBundle;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import javafx.stage.Window;
+import ru.skhanov.mycloudstoreclient.ClientMainClass;
 import ru.skhanov.mycloudstoreclient.MessageReciver;
 import ru.skhanov.mycloudstoreclient.Network;
 import ru.skhanov.mycloudstorecommon.AbstractMessage;
@@ -106,7 +109,7 @@ public class StoragePanelFxController implements Initializable {
 			} finally {
 				Network.stop();
 			}
-		}, "ClientMsgReciver");
+		}, "StorageMsgReciver");
 		t.setDaemon(true);
 		t.start();
 	}
@@ -208,7 +211,9 @@ public class StoragePanelFxController implements Initializable {
 	
 	@FXML
 	private void exitToSingUp() {
-		
+		Stage primaryStage = (Stage) this.rootPane.getScene().getWindow();
+		Network.start();
+		primaryStage.close();		
 	}
 
 }

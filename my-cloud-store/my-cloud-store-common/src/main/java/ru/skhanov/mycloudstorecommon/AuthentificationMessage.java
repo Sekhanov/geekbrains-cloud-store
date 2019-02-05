@@ -1,8 +1,6 @@
 package ru.skhanov.mycloudstorecommon;
 
 import lombok.Getter;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 
@@ -11,7 +9,6 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-@RequiredArgsConstructor
 public class AuthentificationMessage extends AbstractMessage {	
 	
 	private static final long serialVersionUID = 1122033184461537593L;
@@ -20,12 +17,27 @@ public class AuthentificationMessage extends AbstractMessage {
 		REGISTRATION, CHANGE_PASS, AUTHORIZATION, DELETE_USER
 	}	
 	
-	private boolean status;	
-	
-	@NonNull
+	private boolean status;		
+
 	private String login;
-	@NonNull
 	private String password;
-	@NonNull
+	private String newPassword;	
 	private AuthCommandType authCommandType;
+	
+	public AuthentificationMessage(String login, String password, String newPassword, AuthCommandType authCommandType) {
+		this.login = login;
+		this.password = password;
+		this.newPassword = newPassword;
+		this.authCommandType = authCommandType;
+	}
+
+	public AuthentificationMessage(String login, String password, AuthCommandType authCommandType) {
+		this.login = login;
+		this.password = password;
+		this.authCommandType = authCommandType;
+	}
+	
+	
+	
+	
 }

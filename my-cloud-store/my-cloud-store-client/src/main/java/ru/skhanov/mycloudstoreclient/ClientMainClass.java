@@ -21,7 +21,7 @@ public class ClientMainClass extends Application {
         primaryStage.setScene(new Scene(rootPane));
         primaryStage.show();        
     }
-    public static void main(String[] args) {
+    public static void main(String... args) {
         launch(args);
     }
     

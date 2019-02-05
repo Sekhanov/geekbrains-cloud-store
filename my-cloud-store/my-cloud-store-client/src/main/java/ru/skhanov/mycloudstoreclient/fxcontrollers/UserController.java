@@ -5,8 +5,6 @@ import java.util.ResourceBundle;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -39,6 +37,11 @@ public class UserController implements Initializable {
 	
 	public void setUserLabelText(String string) {
 		userLabel.setText(string);
+		if(userLabel.getText().equals("Change Password")) {
+			passwordField.setPromptText("Old Password");;
+			confirmPasswordField.setPromptText("New Password");
+		}
+		
 	}
 	
 	@FXML
@@ -48,14 +51,14 @@ public class UserController implements Initializable {
 			if(userLabel.getText().equals("Create New User")) {
 				Network.sendMsg(new AuthentificationMessage(loginField.getText(), password, AuthCommandType.REGISTRATION));
 			}
-			if(userLabel.getText().equals("Change Password")) {
-				Network.sendMsg(new AuthentificationMessage(loginField.getText(), password, AuthCommandType.CHANGE_PASS));
-			}
+
 			if(userLabel.getText().equals("Delete User")) {
 				Network.sendMsg(new AuthentificationMessage(loginField.getText(), password, AuthCommandType.DELETE_USER));
 			}
-		} else {
-			//TODO user feedBack
+		} 
+		if(confirmPasswordField.getPromptText().equals("New Password")) {
+			Network.sendMsg(new AuthentificationMessage(loginField.getText(), passwordField.getText(),
+					confirmPasswordField.getText(), AuthCommandType.CHANGE_PASS));
 		}
 		 Stage stage = (Stage) rootPane.getScene().getWindow();
 		 stage.close();
