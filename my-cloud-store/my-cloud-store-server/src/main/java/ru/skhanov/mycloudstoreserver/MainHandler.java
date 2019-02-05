@@ -6,8 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-
-import javax.lang.model.element.Element;
+import java.util.Comparator;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -100,6 +99,8 @@ public class MainHandler extends ChannelInboundHandlerAdapter {
 			if(sqlUsersDaoService.authentification(authMessage.getLogin(), authMessage.getPassword())) {
 				authMessage.setStatus(true);
 				sqlUsersDaoService.deleteUserByName(authMessage.getLogin());
+				userCloudStorage = authMessage.getLogin() + "Storage/";
+				deleteUsersCloudStorege(userCloudStorage);
 				ctx.writeAndFlush(authMessage);
 			} else {
 				ctx.writeAndFlush(authMessage);
@@ -119,6 +120,18 @@ public class MainHandler extends ChannelInboundHandlerAdapter {
 		}
 	}
 
+	private void deleteUsersCloudStorege(String userCloudStorage) {
+		Path userStoragePath = Paths.get(userCloudStorage);
+		try {
+			Files.walk(userStoragePath)
+			.sorted(Comparator.reverseOrder())
+			.peek(System.out::println)
+			.map(Path::toFile)			
+			.forEach(File::delete);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 
 	private void deleteFileFromCloudStorage(ChannelHandlerContext ctx, FileOperationsMessage fileOperationsMessage)
 			throws IOException {
