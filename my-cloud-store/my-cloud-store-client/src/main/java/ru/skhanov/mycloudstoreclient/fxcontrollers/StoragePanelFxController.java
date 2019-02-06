@@ -11,8 +11,8 @@ import java.util.ResourceBundle;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -20,7 +20,6 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.Window;
-import ru.skhanov.mycloudstoreclient.ClientMainClass;
 import ru.skhanov.mycloudstoreclient.MessageReciver;
 import ru.skhanov.mycloudstoreclient.Network;
 import ru.skhanov.mycloudstorecommon.AbstractMessage;
@@ -221,6 +220,31 @@ public class StoragePanelFxController implements Initializable {
 		Stage primaryStage = (Stage) this.rootPane.getScene().getWindow();
 		Network.start();
 		primaryStage.close();		
+	}
+	
+	@FXML
+	private void help() {
+		Alert alert = new Alert(Alert.AlertType.INFORMATION);
+	    alert.setTitle("Help");
+	    alert.setHeaderText("Инструкция");
+	    alert.setContentText("Приложение состоит из двух основых панелей: \n"
+	    		+ "local storage - локальное хранилище находящееся на ПК пользователя; \n"
+	    		+ "clud storeage - облачное хранилище располагающеся на сервере. \n"
+	    		+ "Кнопки copy, move, delete над каждой панели служат для соответсвующих"
+	    		+ "файловых операций по отношению к выбранному файлу текущего хранилища. \n"
+	    		+ "С помощью меню File можно обмениваться файлами между локальным хранилищем и ОС: \n"
+	    		+ "upload - загружает файл из ОС в локальное хранилище \n"
+	    		+ "download  - скачивает выбранный в локальном хранилище файл \n");
+	    alert.showAndWait();
+	}
+	
+	@FXML
+	private void about() {
+		Alert alert = new Alert(Alert.AlertType.INFORMATION);
+	    alert.setTitle("About");
+	    alert.setHeaderText("Information");
+	    alert.setContentText("MyCloud Store v1.0   2019");
+	    alert.showAndWait();
 	}
 
 }
