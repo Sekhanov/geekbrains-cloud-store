@@ -122,6 +122,7 @@ public class StoragePanelFxController implements Initializable {
 	@FXML
 	private Path copyFileToCloud() {
 		FileParameters focusedFileLine = localTable.getSelectionModel().getSelectedItem();
+		if(focusedFileLine == null) return null;
 		Path path = Paths.get(CLIENT_STORAGE + focusedFileLine.getName());
 		if (Files.exists(path)) {
 			try {
@@ -138,6 +139,7 @@ public class StoragePanelFxController implements Initializable {
 	@FXML
 	private void copyFileFromCloud() {
 		FileParameters focusedFileLine = cloudTable.getSelectionModel().getSelectedItem();
+		if(focusedFileLine == null) return;
 		FileOperationsMessage fileOperationsMessage = new FileOperationsMessage(FileOperation.COPY, focusedFileLine.getName());
 		Network.sendMsg(fileOperationsMessage);
 	}
@@ -145,7 +147,9 @@ public class StoragePanelFxController implements Initializable {
 	@FXML
 	private void moveFileToCloud() {
 		try {
-			Files.delete(copyFileToCloud());
+			Path path = copyFileToCloud();
+			if(path == null) return;
+			Files.delete(path);
 			refreshLocalFileTable();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -155,6 +159,7 @@ public class StoragePanelFxController implements Initializable {
 	@FXML
 	private void moveFileFromClod() {
 		FileParameters focusedFileLine = cloudTable.getSelectionModel().getSelectedItem();
+		if(focusedFileLine == null) return;
 		FileOperationsMessage fileOperationsMessage = new FileOperationsMessage(FileOperation.MOVE, focusedFileLine.getName());
 		Network.sendMsg(fileOperationsMessage);
 	}
@@ -162,6 +167,7 @@ public class StoragePanelFxController implements Initializable {
 	@FXML
 	private void deleteLocalFile() {
 		FileParameters focusedFileLine = localTable.getSelectionModel().getSelectedItem();
+		if(focusedFileLine == null) return;
 		Path path = Paths.get(CLIENT_STORAGE + focusedFileLine.getName());
 		if (Files.exists(path)) {
 			try {
@@ -176,6 +182,7 @@ public class StoragePanelFxController implements Initializable {
 	@FXML
 	private void delteFileFromCloud() {
 		FileParameters focusedFileLine = cloudTable.getSelectionModel().getSelectedItem();
+		if(focusedFileLine == null) return;
 		FileOperationsMessage fileOperationsMessage = new FileOperationsMessage(FileOperation.DELETE, focusedFileLine.getName());
 		Network.sendMsg(fileOperationsMessage);
 	}
