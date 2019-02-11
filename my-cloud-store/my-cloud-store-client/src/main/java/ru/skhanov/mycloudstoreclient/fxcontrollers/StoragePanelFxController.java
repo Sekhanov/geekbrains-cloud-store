@@ -205,11 +205,10 @@ public class StoragePanelFxController implements Initializable {
 		FileParameters focusedFileLine = localTable.getSelectionModel().getSelectedItem();
 		Path locStoragePath = Paths.get(CLIENT_STORAGE + focusedFileLine.getName());
 		try {
-			byte[] data = Files.readAllBytes(locStoragePath);
 			fileChooser.setInitialFileName(focusedFileLine.getName());
 			File file = fileChooser.showSaveDialog(window);
 			Path osPath = file.toPath();
-			Files.write(osPath, data, StandardOpenOption.CREATE);
+			Files.copy(locStoragePath, osPath);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}	

@@ -120,6 +120,7 @@ public class SignInFxController implements Initializable {
 								sqlOutputLabel.setText("no user with login '" + authentificationMessage.getLogin() + "' or password incorrect");
 							}
 						});
+						break;
 					case DELETE_USER:
 						Util.fxThreadProcess(() -> {
 							if(authentificationMessage.isStatus()) {

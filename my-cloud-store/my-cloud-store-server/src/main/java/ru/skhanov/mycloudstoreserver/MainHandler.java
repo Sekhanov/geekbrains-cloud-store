@@ -16,27 +16,26 @@ import ru.skhanov.mycloudstorecommon.FileMessage;
 import ru.skhanov.mycloudstorecommon.FileOperationsMessage;
 import ru.skhanov.mycloudstorecommon.FileParametersListMessage;
 
-
 /**
  * Класс-обработчик всех входящих десериализованных классов-сообщений от клиента
  */
 public class MainHandler extends ChannelInboundHandlerAdapter {
-	
+
 	private String userCloudStorage;
-	
+
 	private SqlUsersDaoService sqlUsersDaoService;
-	
+
 	public MainHandler() {
 		sqlUsersDaoService = new SqlUsersDaoService("jdbc:sqlite:my_cloud_store_server.db", "org.sqlite.JDBC");
 	}
-	
+
 	@Override
-	public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {		
+	public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
 		try {
 			if (msg == null) {
 				return;
 			}
-			if(msg instanceof AuthentificationMessage) {
+			if (msg instanceof AuthentificationMessage) {
 				authMessageHandler(ctx, msg);
 			}
 			if (msg instanceof FileOperationsMessage) {
@@ -76,7 +75,7 @@ public class MainHandler extends ChannelInboundHandlerAdapter {
 
 	private void authMessageHandler(ChannelHandlerContext ctx, Object msg) {
 		AuthentificationMessage authMessage = (AuthentificationMessage) msg;
-		switch(authMessage.getAuthCommandType()) {
+		switch (authMessage.getAuthCommandType()) {
 		case AUTHORIZATION:
 			if (sqlUsersDaoService.authentification(authMessage.getLogin(), authMessage.getPassword())) {
 				authMessage.setStatus(true);
@@ -87,7 +86,7 @@ public class MainHandler extends ChannelInboundHandlerAdapter {
 			}
 			break;
 		case CHANGE_PASS:
-			if(sqlUsersDaoService.changePass(authMessage.getLogin(), authMessage.getPassword(),
+			if (sqlUsersDaoService.changePass(authMessage.getLogin(), authMessage.getPassword(),
 					authMessage.getNewPassword())) {
 				authMessage.setStatus(true);
 				ctx.writeAndFlush(authMessage);
@@ -96,7 +95,7 @@ public class MainHandler extends ChannelInboundHandlerAdapter {
 			}
 			break;
 		case DELETE_USER:
-			if(sqlUsersDaoService.authentification(authMessage.getLogin(), authMessage.getPassword())) {
+			if (sqlUsersDaoService.authentification(authMessage.getLogin(), authMessage.getPassword())) {
 				authMessage.setStatus(true);
 				sqlUsersDaoService.deleteUserByName(authMessage.getLogin());
 				userCloudStorage = authMessage.getLogin() + "Storage/";
@@ -107,10 +106,10 @@ public class MainHandler extends ChannelInboundHandlerAdapter {
 			}
 			break;
 		case REGISTRATION:
-			if(sqlUsersDaoService.selectUserByName(authMessage.getLogin()) == null) {
+			if (sqlUsersDaoService.selectUserByName(authMessage.getLogin()) == null) {
 				authMessage.setStatus(true);
 				sqlUsersDaoService.insertUser(authMessage.getLogin(), authMessage.getPassword());
-				ctx.writeAndFlush(authMessage);				
+				ctx.writeAndFlush(authMessage);
 			} else {
 				ctx.writeAndFlush(authMessage);
 			}
@@ -123,11 +122,8 @@ public class MainHandler extends ChannelInboundHandlerAdapter {
 	private void deleteUsersCloudStorege(String userCloudStorage) {
 		Path userStoragePath = Paths.get(userCloudStorage);
 		try {
-			Files.walk(userStoragePath)
-			.sorted(Comparator.reverseOrder())
-			.peek(System.out::println)
-			.map(Path::toFile)			
-			.forEach(File::delete);
+			Files.walk(userStoragePath).sorted(Comparator.reverseOrder()).peek(System.out::println).map(Path::toFile)
+					.forEach(File::delete);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -140,25 +136,22 @@ public class MainHandler extends ChannelInboundHandlerAdapter {
 		sendListOfFileParameters(ctx);
 	}
 
-
 	private void sendListOfFileParameters(ChannelHandlerContext ctx) {
 		File directory = new File(userCloudStorage);
-		
-		if(!directory.exists()) {
-			directory.mkdir();			
+
+		if (!directory.exists()) {
+			directory.mkdir();
 		}
 		FileParametersListMessage fileParametersList = new FileParametersListMessage(userCloudStorage);
 		ctx.writeAndFlush(fileParametersList);
 	}
 
-
 	private void copyToClientStorege(ChannelHandlerContext ctx, FileOperationsMessage fileOperationsMessage)
 			throws IOException {
-		Path path =  Paths.get(userCloudStorage + fileOperationsMessage.getFileName());
+		Path path = Paths.get(userCloudStorage + fileOperationsMessage.getFileName());
 		FileMessage fileMessage = new FileMessage(path);
 		ctx.writeAndFlush(fileMessage);
 	}
-
 
 	@Override
 	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
