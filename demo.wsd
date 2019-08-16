@@ -1,0 +1,72 @@
+@startuml
+
++interface persistance.entity.OrmEntity<Key> {
+    +Key getId();
+    +void setId(Key id);
+}
+
+persistance.entity.OrmEntity <|- persistance.entity.StoredFile
+
++class persistance.entity.StoredFile {
+    +static final String TABLE_NAME = "stored_files";
+    +private Long id;
+    +private String fileName;
+    +private byte[] fileData;
+}
+
+persistance.entity.OrmEntity ..> persistance.api.CrudRepository : use
+
+~class persistance.CrudRepositoryImpl<K, E extends OrmEntity<K>> {
+}
+
+persistance.CrudRepositoryImpl --|> persistance.api.StoredFileRepository
+
+persistance.CrudRepositoryImpl <|-- persistance.StoredFileRepositoryImpl
+
+persistance.entity.StoredFile <.. persistance.api.StoredFileRepository : use
+
++interface persistance.api.RepositoryFactory {
+    +StoredFileRepository getStoredFileRepository();
+    +Closeable getCloseable();
+}
+
++interface persistance.api.CrudRepository<K, E extends OrmEntity<K>> {
+    +void save(E entity);
+    +void delete(E entity);
+    +E findById(K id);
+    +List<E> findAll();
+}
+
++interface persistance.api.StoredFileRepository {
+    +List<StoredFile> getFileList();
+    +StoredFile getByName(String fileName);
+}
+
+persistance.api.RepositoryFactory <|-- persistance.RepositoryFactoryImpl
+
+persistance.api.StoredFileRepository ..> persistance.api.RepositoryFactory : use
+
+persistance.StoredFileRepositoryImpl --|> persistance.api.StoredFileRepository
+
+persistance.api.CrudRepository <|-- persistance.CrudRepositoryImpl
+
+persistance.api.CrudRepository <|-- persistance.api.StoredFileRepository
+
+~class persistance.StoredFileRepositoryImpl {
+}
+
+~class persistance.RepositoryFactoryImpl {
+    StoredFileRepository getStoredFileRepository();
+    Closeable getCloseable();
+}
+
+persistance.RepositoryFactoryImpl ..> persistance.StoredFileRepositoryImpl : create
+
++class persistance.RepositoryFactoryProvider {
+    + static RepositoryFactory provide()
+}
+
+persistance.RepositoryFactoryProvider ..> persistance.RepositoryFactoryImpl : create
+persistance.RepositoryFactoryProvider ..> persistance.api.RepositoryFactory : use
+
+@enduml

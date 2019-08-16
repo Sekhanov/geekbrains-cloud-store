@@ -1,0 +1,119 @@
+@startuml
+
+title my-cloud-store scheme
+
+class ru.skhanov.mycloudstoreserver.ServerMainClass {
+  {static} int MAX_OBJ_SIZE
+  +void run()
+  +void main()
+}
+
+class ru.skhanov.mycloudstoreserver.MainHandler {
+-String userCloudStorage
+-SqlUsersDaoService sqlUsersDaoService
++void channelRead()
+-void fileOperationMessageHandler()
+-void authMessageHandler()
+-void deleteUsersCloudStorege()
+-void deleteFileFromCloudStorage()
+-void sendListOfFileParameters()
+-void copyToClientStorege()
++void exceptionCaught()
+}
+
+ru.skhanov.mycloudstoreserver.MainHandler ..> ru.skhanov.mycloudstoreserver.SqlUsersDaoService : use
+
+class ru.skhanov.mycloudstoreserver.SqlUsersDaoService {
+  -Connection connection
+  -PreparedStatement createPreparedStatement()
+  +void insertUser()
+  +void deleteUserByName()
+  +User selectUserByName()
+  +boolean authentification()
+  +boolean changePass()
+
+
+}
+
+ru.skhanov.mycloudstoreserver.SqlUsersDaoService ..> ru.skhanov.mycloudstoreserver.SqlUsersDaoService.User : use
+
+class ru.skhanov.mycloudstoreserver.SqlUsersDaoService.User{
+  -login
+  -password
+}
+
+interface Serializable {
+
+}
+
+ ru.skhanov.mycloudstorecommon.AbstractMessage --> Serializable
+
+abstract class ru.skhanov.mycloudstorecommon.AbstractMessage {
+
+}
+
+class ru.skhanov.mycloudstorecommon.AuthentificationMessage {
+  -boolean status
+  -String login
+	-String password
+	-String newPassword
+}
+
+ru.skhanov.mycloudstorecommon.AuthentificationMessage ..> ru.skhanov.mycloudstorecommon.AuthentificationMessage.AuthCommandType: use
+
+enum ru.skhanov.mycloudstorecommon.AuthentificationMessage.AuthCommandType {
+  REGISTRATION
+  CHANGE_PASS
+  AUTHORIZATION
+  DELETE_USER
+}
+
+ru.skhanov.mycloudstorecommon.AuthentificationMessage --> ru.skhanov.mycloudstorecommon.AbstractMessage
+
+class ru.skhanov.mycloudstorecommon.FileMessage {
+  -String filename
+  -byte[] data
+}
+
+ru.skhanov.mycloudstorecommon.FileMessage --> ru.skhanov.mycloudstorecommon.AbstractMessage
+
+class ru.skhanov.mycloudstorecommon.FileOperationsMessage {
+  -FileOperation fileOperation
+  -String fileName
+}
+
+ru.skhanov.mycloudstorecommon.FileOperationsMessage --> ru.skhanov.mycloudstorecommon.AbstractMessage
+
+enum ru.skhanov.mycloudstorecommon.FileOperationsMessage.FileOperation {
+		COPY
+    MOVE
+    DELETE		
+	}
+
+ru.skhanov.mycloudstorecommon.FileOperationsMessage ..> ru.skhanov.mycloudstorecommon.FileOperationsMessage.FileOperation: use
+
+class ru.skhanov.mycloudstorecommon.FileParameters {
+  String name
+  Long size
+  String date
+}
+
+ru.skhanov.mycloudstorecommon.FileParameters --> Serializable
+
+class ru.skhanov.mycloudstorecommon.FileParametersListMessage {
+  -List<FileParameters> fileParameterList
+}
+
+ru.skhanov.mycloudstorecommon.FileParametersListMessage --> ru.skhanov.mycloudstorecommon.AbstractMessage
+
+ru.skhanov.mycloudstorecommon.FileParametersListMessage ..> ru.skhanov.mycloudstorecommon.FileParameters: use
+
+ru.skhanov.mycloudstoreserver.MainHandler ..> ru.skhanov.mycloudstorecommon.AuthentificationMessage: use
+
+ru.skhanov.mycloudstoreserver.MainHandler ..> ru.skhanov.mycloudstorecommon.FileMessage: use
+
+ru.skhanov.mycloudstoreserver.MainHandler ..> ru.skhanov.mycloudstorecommon.FileOperationsMessage: use
+
+ru.skhanov.mycloudstoreserver.MainHandler ..> ru.skhanov.mycloudstorecommon.FileParametersListMessage: use
+
+@enduml
