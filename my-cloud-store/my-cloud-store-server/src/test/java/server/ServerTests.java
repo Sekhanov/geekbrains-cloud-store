@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import ru.skhanov.mycloudstorecommon.FileParametersListMessage;
 import ru.skhanov.mycloudstoreserver.SqlUsersDaoService;
 
 public class ServerTests {

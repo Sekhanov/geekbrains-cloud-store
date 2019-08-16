@@ -10,6 +10,7 @@
 	<artifactId>my-cloud-store-client</artifactId>
 	<name>my-cloud-store-client</name>
 
+
 	<dependencies>
 		<dependency>
 			<groupId>ru.skhanov</groupId>
