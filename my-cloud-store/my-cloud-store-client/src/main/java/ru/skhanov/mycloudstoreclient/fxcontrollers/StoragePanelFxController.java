@@ -200,7 +200,7 @@ public class StoragePanelFxController implements Initializable {
 	}
 	
 	@FXML
-	private void downloadFileToOs( ) {
+	private void downloadFileToOs() {
 		Window window = this.rootPane.getScene().getWindow();
 		FileParameters focusedFileLine = localTable.getSelectionModel().getSelectedItem();
 		Path locStoragePath = Paths.get(CLIENT_STORAGE + focusedFileLine.getName());

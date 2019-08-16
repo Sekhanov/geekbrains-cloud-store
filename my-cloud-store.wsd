@@ -42,11 +42,11 @@ class ru.skhanov.mycloudstoreserver.SqlUsersDaoService.User{
   -password
 }
 
-interface Serializable {
+interface java.io.Serializable {
 
 }
 
- ru.skhanov.mycloudstorecommon.AbstractMessage --> Serializable
+ ru.skhanov.mycloudstorecommon.AbstractMessage --> java.io.Serializable
 
 abstract class ru.skhanov.mycloudstorecommon.AbstractMessage {
 
@@ -98,7 +98,7 @@ class ru.skhanov.mycloudstorecommon.FileParameters {
   String date
 }
 
-ru.skhanov.mycloudstorecommon.FileParameters --> Serializable
+ru.skhanov.mycloudstorecommon.FileParameters --> java.io.Serializable
 
 class ru.skhanov.mycloudstorecommon.FileParametersListMessage {
   -List<FileParameters> fileParameterList
@@ -115,5 +115,132 @@ ru.skhanov.mycloudstoreserver.MainHandler ..> ru.skhanov.mycloudstorecommon.File
 ru.skhanov.mycloudstoreserver.MainHandler ..> ru.skhanov.mycloudstorecommon.FileOperationsMessage: use
 
 ru.skhanov.mycloudstoreserver.MainHandler ..> ru.skhanov.mycloudstorecommon.FileParametersListMessage: use
+
+class ru.skhanov.mycloudstoreclient.ClientMainClass {
+  +void init()
+  +void start()
+  +void main()
+  +void stop()
+}
+
+class ru.skhanov.mycloudstoreclient.MessageReciver {
+  -Exchanger<AuthentificationMessage> authExchanger;
+	-Exchanger<AbstractMessage> absExchanger
+  +void run()
+}
+
+ru.skhanov.mycloudstoreclient.MessageReciver --> java.lang.Runnable
+
+interface java.lang.Runnable {
+
+}
+
+ru.skhanov.mycloudstoreclient.MessageReciver ..> ru.skhanov.mycloudstorecommon.AbstractMessage: use
+
+ru.skhanov.mycloudstoreclient.MessageReciver ..> ru.skhanov.mycloudstorecommon.AuthentificationMessage
+
+ru.skhanov.mycloudstoreclient.MessageReciver ..> ru.skhanov.mycloudstorecommon.FileMessage
+
+ru.skhanov.mycloudstoreclient.MessageReciver ..> ru.skhanov.mycloudstorecommon.FileParametersListMessage
+
+class ru.skhanov.mycloudstoreclient.Network {
+  {static} Socket socket
+  {static} ObjectEncoderOutputStream objectEncoderOutputStream
+  {static} ObjectDecoderInputStream objectDecoderInputStream
+  {static} Exchanger<AbstractMessage> absMesExchanger
+  {static} Exchanger<AuthentificationMessage> authMesExchanger
+  {static} int MAX_OBJ_SIZE = 100 * 1024 * 1024
+  {static} void start()
+  {static} void stop()
+  {static} boolean sendMsg()
+  {static} AbstractMessage readObject()
+}
+
+ru.skhanov.mycloudstoreclient.Network ..> ru.skhanov.mycloudstorecommon.AbstractMessage: use
+
+ru.skhanov.mycloudstoreclient.Network ..> ru.skhanov.mycloudstorecommon.AuthentificationMessage
+
+class ru.skhanov.mycloudstoreclient.Util {
+ {static} void fxThreadProcess()
+}
+
+class ru.skhanov.mycloudstoreclient.fxcontrollers.SignInFxController {
+  -VBox rootPane
+  -Label sqlOutputLabel
+  -TextField loginTextField
+  -PasswordField passwordField
+  void initialize()
+  -void registration()
+  -void openUserWindow()
+  -void changePassword()
+  -void deleteUser() 
+  -void enterStorage()
+  -void createReciveMessageThread()
+}
+
+ru.skhanov.mycloudstoreclient.fxcontrollers.SignInFxController ..> ru.skhanov.mycloudstoreclient.MessageReciver: use
+
+ru.skhanov.mycloudstoreclient.fxcontrollers.SignInFxController ..> ru.skhanov.mycloudstoreclient.Network: use
+
+ru.skhanov.mycloudstoreclient.fxcontrollers.SignInFxController ..> ru.skhanov.mycloudstoreclient.Util
+
+ru.skhanov.mycloudstoreclient.fxcontrollers.SignInFxController ..> ru.skhanov.mycloudstorecommon.AuthentificationMessage: use
+
+ru.skhanov.mycloudstoreclient.fxcontrollers.SignInFxController ..> ru.skhanov.mycloudstorecommon.AuthentificationMessage.AuthCommandType: use
+
+class ru.skhanov.mycloudstoreclient.fxcontrollers.StoragePanelFxController {
+  -VBox rootPane
+  -TableView<FileParameters> localTable
+  -TableView<FileParameters> cloudTable
+  -FileChooser fileChooser
+  void initialize()
+  void refreshLocalFileTable() 
+  void refreshTableEntries()
+  void initializeTables()
+  void createReciveMessageThread()
+  void requestCloudFileList()
+  -Path copyFileToCloud()
+  -void copyFileFromCloud()
+  -void moveFileToCloud()
+  -void moveFileFromClod()
+  -void deleteLocalFile()
+  -void delteFileFromCloud()
+  -void uploadFileFormOs()
+  -void downloadFileToOs()
+  -void exitToSingUp()
+  -void help()
+  -void about()
+}
+
+ru.skhanov.mycloudstoreclient.fxcontrollers.StoragePanelFxController ..> ru.skhanov.mycloudstoreclient.MessageReciver: use
+
+ru.skhanov.mycloudstoreclient.fxcontrollers.StoragePanelFxController ..> ru.skhanov.mycloudstoreclient.Network: use
+
+ru.skhanov.mycloudstoreclient.fxcontrollers.StoragePanelFxController ..>  ru.skhanov.mycloudstorecommon.AbstractMessage: use
+
+ru.skhanov.mycloudstoreclient.fxcontrollers.StoragePanelFxController ..> ru.skhanov.mycloudstorecommon.FileOperationsMessage: use
+
+ru.skhanov.mycloudstoreclient.fxcontrollers.StoragePanelFxController ..> ru.skhanov.mycloudstorecommon.FileOperationsMessage.FileOperation: use
+
+ru.skhanov.mycloudstoreclient.fxcontrollers.StoragePanelFxController ..> ru.skhanov.mycloudstorecommon.FileParameters: use
+
+ru.skhanov.mycloudstoreclient.fxcontrollers.StoragePanelFxController ..> ru.skhanov.mycloudstorecommon.FileParametersListMessage: use
+
+class ru.skhanov.mycloudstoreclient.fxcontrollers.UserController {
+  -VBox rootPane
+  -Label userLabel
+  -TextField loginField
+  -PasswordField passwordField
+  -PasswordField confirmPasswordField
+  void initialize()
+  void setUserLabelText()
+  -void enter()
+}
+
+ru.skhanov.mycloudstoreclient.fxcontrollers.UserController ..> ru.skhanov.mycloudstoreclient.Network: use
+
+ru.skhanov.mycloudstoreclient.fxcontrollers.UserController ..> ru.skhanov.mycloudstorecommon.AuthentificationMessage: use
+
+ru.skhanov.mycloudstoreclient.fxcontrollers.UserController ..>  ru.skhanov.mycloudstorecommon.AuthentificationMessage.AuthCommandType: use
 
 @enduml
