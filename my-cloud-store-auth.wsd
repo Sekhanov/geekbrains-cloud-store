@@ -1,0 +1,26 @@
+@startuml
+actor User
+box CLOUD_STORE_CLIEN
+    participant SignUp.fxml
+    participant SignInFxController.java   
+    participant Network.java
+end box
+
+box CLOUD_STORE_SERVER
+    participant MainHandler.java
+    participant SqlUsersDaoService.java
+    database my_cloud_store_server.db
+end box
+
+User -> SignUp.fxml: auth request
+SignUp.fxml -> SignInFxController.java: submit form
+SignInFxController.java -> Network.java: create message
+Network.java -> MainHandler.java: forwart message through netty
+MainHandler.java -> SqlUsersDaoService.java: extract message and formward userName and Password
+SqlUsersDaoService.java -> my_cloud_store_server.db: check userName and password
+my_cloud_store_server.db --> SqlUsersDaoService.java: check result
+SqlUsersDaoService.java --> MainHandler.java: true/false
+MainHandler.java --> Network.java: forwart message through netty
+Network.java --> SignInFxController.java: forwart message
+SignInFxController.java --> User: auth result
+@enduml
