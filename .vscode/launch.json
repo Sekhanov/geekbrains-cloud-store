@@ -5,7 +5,8 @@
             "name": "ServerMainClass",
             "request": "launch",
             "mainClass": "ru.skhanov.mycloudstoreserver.ServerMainClass",
-            "projectName": "my-cloud-store-server"
+            "projectName": "my-cloud-store-server",
+            "console": "internalConsole"
         },
         {
             "type": "java",
@@ -13,7 +14,9 @@
             "request": "launch",
             "mainClass": "ru.skhanov.mycloudstoreclient.ClientMainClass",
             "vmArgs": "--module-path c:/coder/tools/jdk/openjfx-12.0.2_windows-x64_bin-sdk/javafx-sdk-12.0.2/lib/ --add-modules javafx.controls,javafx.fxml",
-            "projectName": "my-cloud-store-client"
+            "projectName": "my-cloud-store-client",
+            "console": "internalConsole"
+            
         }
     ]
 }
