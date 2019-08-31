@@ -29,7 +29,7 @@ class ru.skhanov.mycloudstoreserver.SqlUsersDaoService {
   +void insertUser()
   +void deleteUserByName()
   +User selectUserByName()
-  +boolean authentification()
+  +boolean authentication()
   +boolean changePass()
 
 
@@ -52,23 +52,23 @@ abstract class ru.skhanov.mycloudstorecommon.AbstractMessage {
 
 }
 
-class ru.skhanov.mycloudstorecommon.AuthentificationMessage {
+class ru.skhanov.mycloudstorecommon.authenticationMessage {
   -boolean status
   -String login
 	-String password
 	-String newPassword
 }
 
-ru.skhanov.mycloudstorecommon.AuthentificationMessage ..> ru.skhanov.mycloudstorecommon.AuthentificationMessage.AuthCommandType: use
+ru.skhanov.mycloudstorecommon.authenticationMessage ..> ru.skhanov.mycloudstorecommon.authenticationMessage.AuthCommandType: use
 
-enum ru.skhanov.mycloudstorecommon.AuthentificationMessage.AuthCommandType {
+enum ru.skhanov.mycloudstorecommon.authenticationMessage.AuthCommandType {
   REGISTRATION
   CHANGE_PASS
   AUTHORIZATION
   DELETE_USER
 }
 
-ru.skhanov.mycloudstorecommon.AuthentificationMessage --> ru.skhanov.mycloudstorecommon.AbstractMessage
+ru.skhanov.mycloudstorecommon.authenticationMessage --> ru.skhanov.mycloudstorecommon.AbstractMessage
 
 class ru.skhanov.mycloudstorecommon.FileMessage {
   -String filename
@@ -108,7 +108,7 @@ ru.skhanov.mycloudstorecommon.FileParametersListMessage --> ru.skhanov.mycloudst
 
 ru.skhanov.mycloudstorecommon.FileParametersListMessage ..> ru.skhanov.mycloudstorecommon.FileParameters: use
 
-ru.skhanov.mycloudstoreserver.MainHandler ..> ru.skhanov.mycloudstorecommon.AuthentificationMessage: use
+ru.skhanov.mycloudstoreserver.MainHandler ..> ru.skhanov.mycloudstorecommon.authenticationMessage: use
 
 ru.skhanov.mycloudstoreserver.MainHandler ..> ru.skhanov.mycloudstorecommon.FileMessage: use
 
@@ -124,7 +124,7 @@ class ru.skhanov.mycloudstoreclient.ClientMainClass {
 }
 
 class ru.skhanov.mycloudstoreclient.MessageReciver {
-  -Exchanger<AuthentificationMessage> authExchanger;
+  -Exchanger<authenticationMessage> authExchanger;
 	-Exchanger<AbstractMessage> absExchanger
   +void run()
 }
@@ -137,7 +137,7 @@ interface java.lang.Runnable {
 
 ru.skhanov.mycloudstoreclient.MessageReciver ..> ru.skhanov.mycloudstorecommon.AbstractMessage: use
 
-ru.skhanov.mycloudstoreclient.MessageReciver ..> ru.skhanov.mycloudstorecommon.AuthentificationMessage
+ru.skhanov.mycloudstoreclient.MessageReciver ..> ru.skhanov.mycloudstorecommon.authenticationMessage
 
 ru.skhanov.mycloudstoreclient.MessageReciver ..> ru.skhanov.mycloudstorecommon.FileMessage
 
@@ -148,7 +148,7 @@ class ru.skhanov.mycloudstoreclient.Network {
   {static} ObjectEncoderOutputStream objectEncoderOutputStream
   {static} ObjectDecoderInputStream objectDecoderInputStream
   {static} Exchanger<AbstractMessage> absMesExchanger
-  {static} Exchanger<AuthentificationMessage> authMesExchanger
+  {static} Exchanger<authenticationMessage> authMesExchanger
   {static} int MAX_OBJ_SIZE = 100 * 1024 * 1024
   {static} void start()
   {static} void stop()
@@ -158,7 +158,7 @@ class ru.skhanov.mycloudstoreclient.Network {
 
 ru.skhanov.mycloudstoreclient.Network ..> ru.skhanov.mycloudstorecommon.AbstractMessage: use
 
-ru.skhanov.mycloudstoreclient.Network ..> ru.skhanov.mycloudstorecommon.AuthentificationMessage
+ru.skhanov.mycloudstoreclient.Network ..> ru.skhanov.mycloudstorecommon.authenticationMessage
 
 class ru.skhanov.mycloudstoreclient.Util {
  {static} void fxThreadProcess()
@@ -184,9 +184,9 @@ ru.skhanov.mycloudstoreclient.fxcontrollers.SignInFxController ..> ru.skhanov.my
 
 ru.skhanov.mycloudstoreclient.fxcontrollers.SignInFxController ..> ru.skhanov.mycloudstoreclient.Util
 
-ru.skhanov.mycloudstoreclient.fxcontrollers.SignInFxController ..> ru.skhanov.mycloudstorecommon.AuthentificationMessage: use
+ru.skhanov.mycloudstoreclient.fxcontrollers.SignInFxController ..> ru.skhanov.mycloudstorecommon.authenticationMessage: use
 
-ru.skhanov.mycloudstoreclient.fxcontrollers.SignInFxController ..> ru.skhanov.mycloudstorecommon.AuthentificationMessage.AuthCommandType: use
+ru.skhanov.mycloudstoreclient.fxcontrollers.SignInFxController ..> ru.skhanov.mycloudstorecommon.authenticationMessage.AuthCommandType: use
 
 class ru.skhanov.mycloudstoreclient.fxcontrollers.StoragePanelFxController {
   -VBox rootPane
@@ -239,8 +239,8 @@ class ru.skhanov.mycloudstoreclient.fxcontrollers.UserController {
 
 ru.skhanov.mycloudstoreclient.fxcontrollers.UserController ..> ru.skhanov.mycloudstoreclient.Network: use
 
-ru.skhanov.mycloudstoreclient.fxcontrollers.UserController ..> ru.skhanov.mycloudstorecommon.AuthentificationMessage: use
+ru.skhanov.mycloudstoreclient.fxcontrollers.UserController ..> ru.skhanov.mycloudstorecommon.authenticationMessage: use
 
-ru.skhanov.mycloudstoreclient.fxcontrollers.UserController ..>  ru.skhanov.mycloudstorecommon.AuthentificationMessage.AuthCommandType: use
+ru.skhanov.mycloudstoreclient.fxcontrollers.UserController ..>  ru.skhanov.mycloudstorecommon.authenticationMessage.AuthCommandType: use
 
 @enduml

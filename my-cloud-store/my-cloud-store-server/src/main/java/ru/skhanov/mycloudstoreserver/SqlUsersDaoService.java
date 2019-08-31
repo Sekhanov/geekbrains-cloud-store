@@ -82,16 +82,16 @@ public class SqlUsersDaoService {
 		return user;
 	}
 
-	public boolean authentification(String login, String passwrd) {
+	public boolean authentication(String login, String password) {
 		User user = selectUserByName(login);
 		if(user == null) {
 			return false;
 		}
-		return user.getPassword().equals(passwrd);
+		return user.getPassword().equals(password);
 	}
 	
 	public boolean changePass(String login, String oldPass, String newPass) {
-		if(authentification(login, oldPass)) {
+		if(authentication(login, oldPass)) {
 			String sqlString = "UPDATE users SET password = ? WHERE name = ?";
 			try {
 				PreparedStatement preparedStatement = createPreparedStatement(sqlString, newPass, login);

@@ -79,7 +79,7 @@
 					</HBox.margin>
 				</Button>
 				<Button mnemonicParsing="false" prefHeight="29.0"
-					prefWidth="100.0" text="delete" onAction="#delteFileFromCloud">
+					prefWidth="100.0" text="delete" onAction="#deleteFileFromCloud">
 					<HBox.margin>
 						<Insets left="10.0" />
 					</HBox.margin>

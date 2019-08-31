@@ -11,7 +11,7 @@ import java.util.Comparator;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.util.ReferenceCountUtil;
-import ru.skhanov.mycloudstorecommon.AuthentificationMessage;
+import ru.skhanov.mycloudstorecommon.AuthenticationMessage;
 import ru.skhanov.mycloudstorecommon.FileMessage;
 import ru.skhanov.mycloudstorecommon.FileOperationsMessage;
 import ru.skhanov.mycloudstorecommon.FileParametersListMessage;
@@ -35,7 +35,7 @@ public class MainHandler extends ChannelInboundHandlerAdapter {
 			if (msg == null) {
 				return;
 			}
-			if (msg instanceof AuthentificationMessage) {
+			if (msg instanceof AuthenticationMessage) {
 				authMessageHandler(ctx, msg);
 			}
 			if (msg instanceof FileOperationsMessage) {
@@ -59,10 +59,10 @@ public class MainHandler extends ChannelInboundHandlerAdapter {
 		FileOperationsMessage fileOperationsMessage = (FileOperationsMessage) msg;
 		switch (fileOperationsMessage.getFileOperation()) {
 		case COPY:
-			copyToClientStorege(ctx, fileOperationsMessage);
+			copyToClientStorage(ctx, fileOperationsMessage);
 			break;
 		case MOVE:
-			copyToClientStorege(ctx, fileOperationsMessage);
+			copyToClientStorage(ctx, fileOperationsMessage);
 			deleteFileFromCloudStorage(ctx, fileOperationsMessage);
 			break;
 		case DELETE:
@@ -74,10 +74,10 @@ public class MainHandler extends ChannelInboundHandlerAdapter {
 	}
 
 	private void authMessageHandler(ChannelHandlerContext ctx, Object msg) {
-		AuthentificationMessage authMessage = (AuthentificationMessage) msg;
+		AuthenticationMessage authMessage = (AuthenticationMessage) msg;
 		switch (authMessage.getAuthCommandType()) {
 		case AUTHORIZATION:
-			if (sqlUsersDaoService.authentification(authMessage.getLogin(), authMessage.getPassword())) {
+			if (sqlUsersDaoService.authentication(authMessage.getLogin(), authMessage.getPassword())) {
 				authMessage.setStatus(true);
 				userCloudStorage = authMessage.getLogin() + "Storage/";
 				ctx.writeAndFlush(authMessage);
@@ -95,11 +95,11 @@ public class MainHandler extends ChannelInboundHandlerAdapter {
 			}
 			break;
 		case DELETE_USER:
-			if (sqlUsersDaoService.authentification(authMessage.getLogin(), authMessage.getPassword())) {
+			if (sqlUsersDaoService.authentication(authMessage.getLogin(), authMessage.getPassword())) {
 				authMessage.setStatus(true);
 				sqlUsersDaoService.deleteUserByName(authMessage.getLogin());
 				userCloudStorage = authMessage.getLogin() + "Storage/";
-				deleteUsersCloudStorege(userCloudStorage);
+				deleteUsersCloudStorage(userCloudStorage);
 				ctx.writeAndFlush(authMessage);
 			} else {
 				ctx.writeAndFlush(authMessage);
@@ -119,7 +119,7 @@ public class MainHandler extends ChannelInboundHandlerAdapter {
 		}
 	}
 
-	private void deleteUsersCloudStorege(String userCloudStorage) {
+	private void deleteUsersCloudStorage(String userCloudStorage) {
 		Path userStoragePath = Paths.get(userCloudStorage);
 		try {
 			Files.walk(userStoragePath).sorted(Comparator.reverseOrder()).peek(System.out::println).map(Path::toFile)
@@ -146,7 +146,7 @@ public class MainHandler extends ChannelInboundHandlerAdapter {
 		ctx.writeAndFlush(fileParametersList);
 	}
 
-	private void copyToClientStorege(ChannelHandlerContext ctx, FileOperationsMessage fileOperationsMessage)
+	private void copyToClientStorage(ChannelHandlerContext ctx, FileOperationsMessage fileOperationsMessage)
 			throws IOException {
 		Path path = Paths.get(userCloudStorage + fileOperationsMessage.getFileName());
 		FileMessage fileMessage = new FileMessage(path);

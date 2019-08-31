@@ -11,8 +11,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import ru.skhanov.mycloudstoreclient.Network;
-import ru.skhanov.mycloudstorecommon.AuthentificationMessage;
-import ru.skhanov.mycloudstorecommon.AuthentificationMessage.AuthCommandType;
+import ru.skhanov.mycloudstorecommon.AuthenticationMessage;
+import ru.skhanov.mycloudstorecommon.AuthenticationMessage.AuthCommandType;
 
 public class UserController implements Initializable {
 	
@@ -49,15 +49,15 @@ public class UserController implements Initializable {
 		String password = passwordField.getText().equals(confirmPasswordField.getText()) ? this.passwordField.getText() : null;
 		if(password != null) {
 			if(userLabel.getText().equals("Create New User")) {
-				Network.sendMsg(new AuthentificationMessage(loginField.getText(), password, AuthCommandType.REGISTRATION));
+				Network.sendMsg(new AuthenticationMessage(loginField.getText(), password, AuthCommandType.REGISTRATION));
 			}
 
 			if(userLabel.getText().equals("Delete User")) {
-				Network.sendMsg(new AuthentificationMessage(loginField.getText(), password, AuthCommandType.DELETE_USER));
+				Network.sendMsg(new AuthenticationMessage(loginField.getText(), password, AuthCommandType.DELETE_USER));
 			}
 		} 
 		if(confirmPasswordField.getPromptText().equals("New Password")) {
-			Network.sendMsg(new AuthentificationMessage(loginField.getText(), passwordField.getText(),
+			Network.sendMsg(new AuthenticationMessage(loginField.getText(), passwordField.getText(),
 					confirmPasswordField.getText(), AuthCommandType.CHANGE_PASS));
 		}
 		 Stage stage = (Stage) rootPane.getScene().getWindow();

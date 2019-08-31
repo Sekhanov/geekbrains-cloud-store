@@ -8,7 +8,7 @@ import io.netty.handler.codec.serialization.ObjectDecoderInputStream;
 import io.netty.handler.codec.serialization.ObjectEncoderOutputStream;
 import lombok.Getter;
 import ru.skhanov.mycloudstorecommon.AbstractMessage;
-import ru.skhanov.mycloudstorecommon.AuthentificationMessage;
+import ru.skhanov.mycloudstorecommon.AuthenticationMessage;
 
 /**
  * Класс обслуживающий сеть со стороны клиента
@@ -20,7 +20,7 @@ public class Network {
 	@Getter
 	private static Exchanger<AbstractMessage> absMesExchanger;
 	@Getter
-	private static Exchanger<AuthentificationMessage> authMesExchanger;
+	private static Exchanger<AuthenticationMessage> authMesExchanger;
 
 	private static final int MAX_OBJ_SIZE = 100 * 1024 * 1024;
 
@@ -31,7 +31,7 @@ public class Network {
 			objectDecoderInputStream = new ObjectDecoderInputStream(socket.getInputStream(), MAX_OBJ_SIZE);
 			absMesExchanger = new Exchanger<>();
 			authMesExchanger = new Exchanger<>();
-			new MessageReciver(authMesExchanger, absMesExchanger);
+			new MessageReceiver(authMesExchanger, absMesExchanger);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

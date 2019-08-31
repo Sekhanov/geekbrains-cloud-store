@@ -14,11 +14,11 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import ru.skhanov.mycloudstoreclient.MessageReciver;
+import ru.skhanov.mycloudstoreclient.MessageReceiver;
 import ru.skhanov.mycloudstoreclient.Network;
 import ru.skhanov.mycloudstoreclient.Util;
-import ru.skhanov.mycloudstorecommon.AuthentificationMessage;
-import ru.skhanov.mycloudstorecommon.AuthentificationMessage.AuthCommandType;
+import ru.skhanov.mycloudstorecommon.AuthenticationMessage;
+import ru.skhanov.mycloudstorecommon.AuthenticationMessage.AuthCommandType;
 
 public class SignInFxController implements Initializable {
 
@@ -36,14 +36,14 @@ public class SignInFxController implements Initializable {
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		createReciveMessageThread();
+		createReceiveMessageThread();
 	}
 
 	@FXML
 	private void submit() {
 		String login = loginTextField.getText();
 		String password = passwordField.getText();
-		AuthentificationMessage authMessage = new AuthentificationMessage(login, password,
+		AuthenticationMessage authMessage = new AuthenticationMessage(login, password,
 				AuthCommandType.AUTHORIZATION);
 		Network.sendMsg(authMessage);
 	}
@@ -94,48 +94,48 @@ public class SignInFxController implements Initializable {
 
 	/**
 	 * Метод создает поток, который обменивается и обрабатывает сообщения типа
-	 * {@link AuthentificationMessage} из {@link MessageReciver}
+	 * {@link AuthenticationMessage} из {@link MessageReceiver}
 	 */
-	private void createReciveMessageThread() {
+	private void createReceiveMessageThread() {
 		Thread t = new Thread(() -> {
 			try {
 				while (true) {
-					AuthentificationMessage authentificationMessage = Network.getAuthMesExchanger().exchange(null);
-					switch (authentificationMessage.getAuthCommandType()) {
+					AuthenticationMessage authenticationMessage = Network.getAuthMesExchanger().exchange(null);
+					switch (authenticationMessage.getAuthCommandType()) {
 					case AUTHORIZATION:
 						Util.fxThreadProcess(() -> {
-							if (authentificationMessage.isStatus()) {
+							if (authenticationMessage.isStatus()) {
 								enterStorage();
-								System.out.println("authentification passed");
+								System.out.println("authentication passed");
 							} else {
-								sqlOutputLabel.setText("authentificaton failed");
+								sqlOutputLabel.setText("authentication failed");
 							}
 						});
 						break;
 					case CHANGE_PASS:
 						Util.fxThreadProcess(() -> {
-							if(authentificationMessage.isStatus()) {
-								sqlOutputLabel.setText("user password with login '"  + authentificationMessage.getLogin() + "' successfully changed");
+							if(authenticationMessage.isStatus()) {
+								sqlOutputLabel.setText("user password with login '"  + authenticationMessage.getLogin() + "' successfully changed");
 							} else {
-								sqlOutputLabel.setText("no user with login '" + authentificationMessage.getLogin() + "' or password incorrect");
+								sqlOutputLabel.setText("no user with login '" + authenticationMessage.getLogin() + "' or password incorrect");
 							}
 						});
 						break;
 					case DELETE_USER:
 						Util.fxThreadProcess(() -> {
-							if(authentificationMessage.isStatus()) {
-								sqlOutputLabel.setText("user with login '"  + authentificationMessage.getLogin() + "' and his storage successfully deleted");
+							if(authenticationMessage.isStatus()) {
+								sqlOutputLabel.setText("user with login '"  + authenticationMessage.getLogin() + "' and his storage successfully deleted");
 							} else {
-								sqlOutputLabel.setText("no user with login '" + authentificationMessage.getLogin() + "' or password incorrect");
+								sqlOutputLabel.setText("no user with login '" + authenticationMessage.getLogin() + "' or password incorrect");
 							}
 						});
 						break;
 					case REGISTRATION:
 						Util.fxThreadProcess(() -> {
-							if (authentificationMessage.isStatus()) {
+							if (authenticationMessage.isStatus()) {
 								sqlOutputLabel.setText("user successfully registered");
 							} else {
-								sqlOutputLabel.setText("user with login '" + authentificationMessage.getLogin() + "' alredy exist");
+								sqlOutputLabel.setText("user with login '" + authenticationMessage.getLogin() + "' already exist");
 							}
 						});
 						break;
@@ -148,7 +148,7 @@ public class SignInFxController implements Initializable {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-		}, "AuthMsgReciever");
+		}, "AuthMsgReceiver");
 		t.setDaemon(true);
 		t.start();
 	}

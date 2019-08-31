@@ -20,7 +20,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.Window;
-import ru.skhanov.mycloudstoreclient.MessageReciver;
+import ru.skhanov.mycloudstoreclient.MessageReceiver;
 import ru.skhanov.mycloudstoreclient.Network;
 import ru.skhanov.mycloudstorecommon.AbstractMessage;
 import ru.skhanov.mycloudstorecommon.FileMessage;
@@ -47,7 +47,7 @@ public class StoragePanelFxController implements Initializable {
 		initializeTables(localTable);
 		initializeTables(cloudTable);
 		refreshLocalFileTable();
-		createReciveMessageThread();
+		createReceiveMessageThread();
 		requestCloudFileList();
 	}
 
@@ -84,9 +84,9 @@ public class StoragePanelFxController implements Initializable {
 
 	/**
 	 * Метод создает поток, который обменивается и обрабатывает сообщения
-	 *  типа {@link AbstractMessage} из {@link MessageReciver}
+	 *  типа {@link AbstractMessage} из {@link MessageReceiver}
 	 */
-	private void createReciveMessageThread() {
+	private void createReceiveMessageThread() {
 		Thread t = new Thread(() -> {
 			try {
 				while (true) {
@@ -108,7 +108,7 @@ public class StoragePanelFxController implements Initializable {
 			} finally {
 				Network.stop();
 			}
-		}, "StorageMsgReciver");
+		}, "StorageMsgReceiver");
 		t.setDaemon(true);
 		t.start();
 	}
@@ -179,7 +179,7 @@ public class StoragePanelFxController implements Initializable {
 	}
 	
 	@FXML
-	private void delteFileFromCloud() {
+	private void deleteFileFromCloud() {
 		FileParameters focusedFileLine = cloudTable.getSelectionModel().getSelectedItem();
 		if(focusedFileLine == null) return;
 		FileOperationsMessage fileOperationsMessage = new FileOperationsMessage(FileOperation.DELETE, focusedFileLine.getName());
@@ -226,10 +226,10 @@ public class StoragePanelFxController implements Initializable {
 		Alert alert = new Alert(Alert.AlertType.INFORMATION);
 	    alert.setTitle("Help");
 	    alert.setHeaderText("Инструкция");
-	    alert.setContentText("Приложение состоит из двух основых панелей: \n"
+	    alert.setContentText("Приложение состоит из двух основных панелей: \n"
 	    		+ "local storage - локальное хранилище находящееся на ПК пользователя; \n"
-	    		+ "clud storeage - облачное хранилище располагающеся на сервере. \n"
-	    		+ "Кнопки copy, move, delete над каждой панели служат для соответсвующих"
+	    		+ "cloud storage - облачное хранилище располагающегося на сервере. \n"
+	    		+ "Кнопки copy, move, delete над каждой панели служат для соответствующих"
 	    		+ "файловых операций по отношению к выбранному файлу текущего хранилища. \n"
 	    		+ "С помощью меню File можно обмениваться файлами между локальным хранилищем и ОС: \n"
 	    		+ "upload - загружает файл из ОС в локальное хранилище \n"
