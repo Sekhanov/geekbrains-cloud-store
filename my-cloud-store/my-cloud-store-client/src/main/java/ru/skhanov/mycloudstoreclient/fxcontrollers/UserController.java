@@ -50,6 +50,7 @@ public class UserController implements Initializable {
 		if(password != null) {
 			if(userLabel.getText().equals("Create New User")) {
 				Network.sendMsg(new AuthenticationMessage(loginField.getText(), password, AuthCommandType.REGISTRATION));
+				Network.sendMsg(new AuthenticationMessage(loginField.getText(), password, AuthCommandType.REGISTRATION));
 			}
 
 			if(userLabel.getText().equals("Delete User")) {
