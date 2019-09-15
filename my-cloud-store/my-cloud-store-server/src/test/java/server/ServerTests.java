@@ -4,7 +4,8 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import ru.skhanov.mycloudstoreserver.SqlUsersDaoService;
+import ru.skhanov.mycloudstoreserver.service.SqlUsersDaoService;
+import ru.skhanov.mycloudstoreserver.service.User;
 
 public class ServerTests {
 
@@ -16,7 +17,7 @@ public class ServerTests {
 		SqlUsersDaoService sqlUsersDaoService = new SqlUsersDaoService("jdbc:sqlite:my_cloud_store_server.db", "org.sqlite.JDBC");		
 		sqlUsersDaoService.insertUser(testLogin, testPassword);
 		sqlUsersDaoService.changePass(testLogin, testPassword, newPass);
-		SqlUsersDaoService.User user = sqlUsersDaoService.selectUserByName("testUser");
+		User user = sqlUsersDaoService.selectUserByName("testUser");
 		assertEquals("54321", user.getPassword());
 		sqlUsersDaoService.deleteUserByName("testUser");		
 	}

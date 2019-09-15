@@ -15,6 +15,8 @@ import ru.skhanov.mycloudstorecommon.AuthenticationMessage;
 import ru.skhanov.mycloudstorecommon.FileMessage;
 import ru.skhanov.mycloudstorecommon.FileOperationsMessage;
 import ru.skhanov.mycloudstorecommon.FileParametersListMessage;
+import ru.skhanov.mycloudstoreserver.service.AuthenticationFactory;
+import ru.skhanov.mycloudstoreserver.service.AuthenticationService;
 
 /**
  * Класс-обработчик всех входящих десериализованных классов-сообщений от клиента
@@ -23,10 +25,10 @@ public class MainHandler extends ChannelInboundHandlerAdapter {
 
 	private String userCloudStorage;
 
-	private SqlUsersDaoService sqlUsersDaoService;
+	private AuthenticationService sqlUsersDaoService;
 
 	public MainHandler() {
-		sqlUsersDaoService = new SqlUsersDaoService("jdbc:sqlite:my_cloud_store_server.db", "org.sqlite.JDBC");
+		sqlUsersDaoService = AuthenticationFactory.createAuthenticationService();
 	}
 
 	@Override
