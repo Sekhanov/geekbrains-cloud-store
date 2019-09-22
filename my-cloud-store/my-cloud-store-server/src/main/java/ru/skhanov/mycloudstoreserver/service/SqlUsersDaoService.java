@@ -103,4 +103,19 @@ public class SqlUsersDaoService implements AuthenticationService {
 		return false;
 	}
 
+	@Override
+	public boolean isLogin(String login) {
+		User user = selectUserByName(login);
+		if(user == null) {
+			return false;
+		}
+		return true;
+	}
+
+	@Override
+	public boolean checkPassword(String login, String password) {
+		User user = selectUserByName(login);
+		return user.getPassword().equals(password);
+	}
+
 }

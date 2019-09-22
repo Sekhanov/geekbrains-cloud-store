@@ -15,6 +15,9 @@ import ru.skhanov.mycloudstorecommon.AuthenticationMessage;
 import ru.skhanov.mycloudstorecommon.FileMessage;
 import ru.skhanov.mycloudstorecommon.FileOperationsMessage;
 import ru.skhanov.mycloudstorecommon.FileParametersListMessage;
+import ru.skhanov.mycloudstoreserver.chanofauthenrification.CheckPassMiddle;
+import ru.skhanov.mycloudstoreserver.chanofauthenrification.LoginExistCheckMiddle;
+import ru.skhanov.mycloudstoreserver.chanofauthenrification.MiddleWare;
 import ru.skhanov.mycloudstoreserver.service.AuthenticationFactory;
 import ru.skhanov.mycloudstoreserver.service.AuthenticationService;
 
@@ -79,7 +82,10 @@ public class MainHandler extends ChannelInboundHandlerAdapter {
 		AuthenticationMessage authMessage = (AuthenticationMessage) msg;
 		switch (authMessage.getAuthCommandType()) {
 		case AUTHORIZATION:
-			if (sqlUsersDaoService.authentication(authMessage.getLogin(), authMessage.getPassword())) {
+			MiddleWare authMiddle = new LoginExistCheckMiddle(sqlUsersDaoService);
+			authMiddle.linkWith(new CheckPassMiddle(sqlUsersDaoService));
+
+			if (authMiddle.check(authMessage.getLogin(), authMessage.getPassword())) {
 				authMessage.setStatus(true);
 				userCloudStorage = authMessage.getLogin() + "Storage/";
 				ctx.writeAndFlush(authMessage);
