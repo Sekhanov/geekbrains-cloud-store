@@ -48,5 +48,22 @@ public class SqlDaoServiceLoggingProxy implements AuthenticationService {
         sqlUsersDaoService.changePass(login, oldPass, newPass);
         return false;
     }
+
+    @Override
+    public boolean isLogin(String login) {
+        logger.info(String.format(" check login '%s'", login));
+        User user = selectUserByName(login);
+		if(user == null) {
+			return false;
+		}
+		return true;
+    }
+
+    @Override
+    public boolean checkPassword(String login, String password) {
+        logger.info(String.format(" check password from login '%s'", login));
+        User user = selectUserByName(login);
+		return user.getPassword().equals(password);
+    }
     
 }

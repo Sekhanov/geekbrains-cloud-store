@@ -14,5 +14,9 @@ public interface AuthenticationService {
 	public boolean authentication(String login, String password);
 	
 	public boolean changePass(String login, String oldPass, String newPass);
+
+	public boolean isLogin(String login);
+
+	public boolean checkPassword(String login, String password);
     
 }
