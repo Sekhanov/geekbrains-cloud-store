@@ -5,8 +5,10 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
-import ru.skhanov.mycloudstoreserver.service.User;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -14,6 +16,8 @@ import ru.skhanov.mycloudstoreserver.service.User;
  * для реализации механизма аутентификации в приложении
  */
 public class SqlUsersDaoService implements AuthenticationService {	
+
+	private Map<String, User> userIdentityList;
 
 
 	private Connection connection;
@@ -26,6 +30,7 @@ public class SqlUsersDaoService implements AuthenticationService {
 			e.printStackTrace();
 		}
 		System.out.println("DB with URL " + sqlUrl + " successfully connected");
+		userIdentityList = new HashMap<>();
 	}
 
 	private PreparedStatement createPreparedStatement(String sql, String... parameters) throws SQLException {
@@ -43,6 +48,7 @@ public class SqlUsersDaoService implements AuthenticationService {
 		try {
 			PreparedStatement preparedStatement = createPreparedStatement(sqlString, name, password);
 			preparedStatement.executeUpdate();
+			userIdentityList.put(name, new User(name, password));
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -55,6 +61,7 @@ public class SqlUsersDaoService implements AuthenticationService {
 		try {
 			preparedStatement = createPreparedStatement(sqlString, login);
 			preparedStatement.executeUpdate();
+			userIdentityList.remove(login);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -62,6 +69,9 @@ public class SqlUsersDaoService implements AuthenticationService {
 
 	@Override
 	public User selectUserByName(String login) {
+		if(userIdentityList.containsKey(login)) {
+			return userIdentityList.get(login);
+		}
 		String sqlString = "SELECT name, password FROM users WHERE name = ?";
 		User user = null;
 		try {
@@ -80,6 +90,9 @@ public class SqlUsersDaoService implements AuthenticationService {
 
 	@Override
 	public boolean authentication(String login, String password) {
+		if(userIdentityList.containsKey(login)) {
+			return userIdentityList.get(login).getPassword().equals(password);
+		}
 		User user = selectUserByName(login);
 		if(user == null) {
 			return false;
@@ -105,6 +118,9 @@ public class SqlUsersDaoService implements AuthenticationService {
 
 	@Override
 	public boolean isLogin(String login) {
+		if(userIdentityList.containsKey(login)) {
+			return true;
+		}
 		User user = selectUserByName(login);
 		if(user == null) {
 			return false;
@@ -114,6 +130,9 @@ public class SqlUsersDaoService implements AuthenticationService {
 
 	@Override
 	public boolean checkPassword(String login, String password) {
+		if(userIdentityList.containsKey(login)) {
+			return userIdentityList.get(login).getPassword().equals(password);
+		}
 		User user = selectUserByName(login);
 		return user.getPassword().equals(password);
 	}
