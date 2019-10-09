@@ -82,48 +82,64 @@ public class MainHandler extends ChannelInboundHandlerAdapter {
 		AuthenticationMessage authMessage = (AuthenticationMessage) msg;
 		switch (authMessage.getAuthCommandType()) {
 		case AUTHORIZATION:
-			MiddleWare authMiddle = new LoginExistCheckMiddle(sqlUsersDaoService);
-			authMiddle.linkWith(new CheckPassMiddle(sqlUsersDaoService));
-
-			if (authMiddle.check(authMessage.getLogin(), authMessage.getPassword())) {
-				authMessage.setStatus(true);
-				userCloudStorage = authMessage.getLogin() + "Storage/";
-				ctx.writeAndFlush(authMessage);
-			} else {
-				ctx.writeAndFlush(authMessage);
-			}
+			authorizationCheck(ctx, authMessage);
 			break;
 		case CHANGE_PASS:
-			if (sqlUsersDaoService.changePass(authMessage.getLogin(), authMessage.getPassword(),
-					authMessage.getNewPassword())) {
-				authMessage.setStatus(true);
-				ctx.writeAndFlush(authMessage);
-			} else {
-				ctx.writeAndFlush(authMessage);
-			}
+			changeUserPassword(ctx, authMessage);
 			break;
 		case DELETE_USER:
-			if (sqlUsersDaoService.authentication(authMessage.getLogin(), authMessage.getPassword())) {
-				authMessage.setStatus(true);
-				sqlUsersDaoService.deleteUserByName(authMessage.getLogin());
-				userCloudStorage = authMessage.getLogin() + "Storage/";
-				deleteUsersCloudStorage(userCloudStorage);
-				ctx.writeAndFlush(authMessage);
-			} else {
-				ctx.writeAndFlush(authMessage);
-			}
+			deleteUser(ctx, authMessage);
 			break;
 		case REGISTRATION:
-			if (sqlUsersDaoService.selectUserByName(authMessage.getLogin()) == null) {
-				authMessage.setStatus(true);
-				sqlUsersDaoService.insertUser(authMessage.getLogin(), authMessage.getPassword());
-				ctx.writeAndFlush(authMessage);
-			} else {
-				ctx.writeAndFlush(authMessage);
-			}
+			userRegistration(ctx, authMessage);
 			break;
 		default:
 			break;
+		}
+	}
+
+	private void userRegistration(ChannelHandlerContext ctx, AuthenticationMessage authMessage) {
+		if (sqlUsersDaoService.selectUserByName(authMessage.getLogin()) == null) {
+			authMessage.setStatus(true);
+			sqlUsersDaoService.insertUser(authMessage.getLogin(), authMessage.getPassword());
+			ctx.writeAndFlush(authMessage);
+		} else {
+			ctx.writeAndFlush(authMessage);
+		}
+	}
+
+	private void deleteUser(ChannelHandlerContext ctx, AuthenticationMessage authMessage) {
+		if (sqlUsersDaoService.authentication(authMessage.getLogin(), authMessage.getPassword())) {
+			authMessage.setStatus(true);
+			sqlUsersDaoService.deleteUserByName(authMessage.getLogin());
+			userCloudStorage = authMessage.getLogin() + "Storage/";
+			deleteUsersCloudStorage(userCloudStorage);
+			ctx.writeAndFlush(authMessage);
+		} else {
+			ctx.writeAndFlush(authMessage);
+		}
+	}
+
+	private void changeUserPassword(ChannelHandlerContext ctx, AuthenticationMessage authMessage) {
+		if (sqlUsersDaoService.changePass(authMessage.getLogin(), authMessage.getPassword(),
+				authMessage.getNewPassword())) {
+			authMessage.setStatus(true);
+			ctx.writeAndFlush(authMessage);
+		} else {
+			ctx.writeAndFlush(authMessage);
+		}
+	}
+
+	private void authorizationCheck(ChannelHandlerContext ctx, AuthenticationMessage authMessage) {
+		MiddleWare authMiddle = new LoginExistCheckMiddle(sqlUsersDaoService);
+		authMiddle.linkWith(new CheckPassMiddle(sqlUsersDaoService));
+
+		if (authMiddle.check(authMessage.getLogin(), authMessage.getPassword())) {
+			authMessage.setStatus(true);
+			userCloudStorage = authMessage.getLogin() + "Storage/";
+			ctx.writeAndFlush(authMessage);
+		} else {
+			ctx.writeAndFlush(authMessage);
 		}
 	}
 

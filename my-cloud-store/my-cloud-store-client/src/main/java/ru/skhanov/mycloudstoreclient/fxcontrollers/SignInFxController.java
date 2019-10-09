@@ -21,6 +21,9 @@ import ru.skhanov.mycloudstorecommon.AuthenticationMessage;
 import ru.skhanov.mycloudstorecommon.AuthenticationMessage.AuthCommandType;
 
 public class SignInFxController implements Initializable {
+	
+	public static final String USER_PANEL = "/User.fxml";
+	public static final String STORAGE_PANEL = "/StoragePanel.fxml";
 
 	@FXML
 	private VBox rootPane;
@@ -57,7 +60,7 @@ public class SignInFxController implements Initializable {
 		final Stage dialog = new Stage();
 		dialog.initModality(Modality.APPLICATION_MODAL);
 		dialog.initOwner(rootPane.getScene().getWindow());
-		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/User.fxml"));
+		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(USER_PANEL));
 		VBox vRootBox;
 		try {
 			vRootBox = fxmlLoader.load();
@@ -84,7 +87,7 @@ public class SignInFxController implements Initializable {
 	private void enterStorage() {
 		VBox vBox;
 		try {
-			vBox = FXMLLoader.load(getClass().getResource("/StoragePanel.fxml"));
+			vBox = FXMLLoader.load(getClass().getResource(STORAGE_PANEL));
 			rootPane.getChildren().setAll(vBox);
 		} catch (IOException e) {
 			e.printStackTrace();
